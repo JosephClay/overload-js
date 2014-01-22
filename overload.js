@@ -5,34 +5,47 @@
 		 * for type checking
 		 * @type {Function}
 		 */
-	var _toString = Object.prototype.toString;
+	var _toString = (function(toString) {
+			return function(obj) {
+				return toString.call(obj);
+			};
+		}(Object.prototype.toString)),
 
 		/**
 		 * Type checks
-		 * @return {Function{}}
 		 */
-		_check = (function() {
+		_checkMap = (function() {
 
-			var checks = {},
-				types = ['Function', 'String', 'Number', 'Date', 'RegExp', 'Array'],
+			var map = {},
+				types = [
+					// Only mapping items that need to be mapped.
+					// Items not in this list are doing faster
+					// (non-string) checks
+					{ key: 'Date',     val: 3 },
+					{ key: 'Number',   val: 5 },
+					{ key: 'String',   val: 6 },
+					{ key: 'Object',   val: 7 },
+					{ key: 'Array',    val: 8 },
+					{ key: 'RegExp',   val: 9 },
+					{ key: 'Function', val: 11 }
+				],
 				idx = types.length;
 			while (idx--) {
-				checks[types[idx].toLowerCase()] = (function(name) {
-					return function(obj) {
-						return _toString.call(obj) === '[object ' + name + ']';
-					};	
-				}(types[idx]));
+				map['[object ' + types[idx].key + ']'] = types[idx].val;
 			}
 
-			checks.array = Array.isArray || checks.array;
-
-			checks.element = function(obj) {
-				return !!(obj && obj.nodeType === 1);
-			};
-
-			return checks;
+			return map;
 
 		}()),
+
+		/**
+		 * Element check from Underscore
+		 * @param  {Value}  obj
+		 * @return {Boolean}
+		 */
+		_isElement = function(obj) {
+			return !!(obj && obj.nodeType === 1);
+		},
 
 		/**
 		 * Changes arguments to an array
@@ -85,22 +98,16 @@
 		if (val === null) { return _types['null']; }
 		if (val === undefined) { return _types['undefined']; }
 		if (val === true || val === false) { return _types['Boolean']; }
+		if (_isElement(val)) { return _types['Element']; }
 
-		if (_check.number(val)) {
+		var typeString = _toString(val);
+		if (_checkMap[typeString] === _types['Number']) {
 			if (val !== +val) { return _types['NaN']; } // NaN check
 			if (!isFinite(val)) { return _types['Infinity']; } // Finite check
 			return _types['Number']; // definitely a number
 		}
 
-		if (_check.string(val)) { return _types['String']; }
-		if (_check.function(val)) { return _types['Function']; }
-		if (_check.array(val)) { return _types['Array']; }
-		if (_check.regexp(val)) { return _types['RegExp']; }
-		if (_check.date(val)) { return _types['Date']; }
-		if (_check.element(val)) { return _types['Element']; }
-		
-		// Nothing else matches, it's a plain object
-		return _types['Object'];
+		return _checkMap[typeString];
 	};
 
 	var _convertConfigurationTypes = function(args) {
@@ -183,7 +190,8 @@
 
 	var _matchAny = function(args, val) {
 		var type = _getParameterType(val),
-			idx = args.length;
+			idx = args.length,
+			mapItem;
 
 		while (idx--) {
 			mapItem = args[idx];
