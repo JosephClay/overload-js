@@ -1,33 +1,69 @@
 (function(root, undefined) {
 
+	// Variablizing the strings for consistency
+	// and to avoid harmful dot-notation look-ups with
+	// javascript keywords
+	var sNull = 'Null',
+		sUndefined = 'Undefined',
+		sInfinity = 'Infinity',
+		sDate = 'Date',
+		sNaN = 'NaN',
+		sNumber = 'Number',
+		sString = 'String',
+		sObject = 'Object',
+		sArray = 'Array',
+		sRegExp = 'RegExp',
+		sBoolean = 'Boolean',
+		sFunction = 'Function',
+		sElement = 'Element';
+
 	// Utilizing the non-standard (but available in modern browsers) Global Object names
 	// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
 	// Provide a polyfill for items without names
 	(function() {
-		var objects = [
-			'Date',
-			'Number',
-			'String',
-			'Object',
-			'Array',
-			'RegExp',
-			'Boolean',
-			'Function',
-			'Element'
+		var globalObjects = [
+			sDate,
+			sNumber,
+			sString,
+			sObject,
+			sArray,
+			sRegExp,
+			sBoolean,
+			sFunction,
+			sElement
 		],
-		idx = objects.length;
+		idx = globalObjects.length;
 		while (idx--) {
-			if (!root[objects[idx]].name) {
-				root[objects[idx]].name = objects[idx];
+			if (!root[globalObjects[idx]].name) {
+				root[globalObjects[idx]].name = globalObjects[idx];
 			}
 		}
 	}());
 
-		/**
-		 * Cached reference to Object.prototype.toString
-		 * for type checking
-		 * @type {Function}
-		 */
+	/**
+	 * Possible values
+	 * @type {Object}
+	 */
+	var _types = {};
+	_types[sNull] = 0;
+	_types[sUndefined] = 1;
+	_types[sInfinity] = 2;
+	_types[sDate] = 3;
+	_types[sNaN] = 4;
+	_types[sNumber] = 5;
+	_types[sString] = 6;
+	_types[sObject] = 7;
+	_types[sArray] = 8;
+	_types[sRegExp] = 9;
+	_types[sBoolean] = 10;
+	_types[sFunction] = 11;
+	_types[sElement] = 12;
+
+	/**
+	 * Cached reference to Object.prototype.toString
+	 * for type checking
+	 * @type {Function}
+	 */
 	var _toString = (function(toString) {
 			return function(obj) {
 				return toString.call(obj);
@@ -44,13 +80,13 @@
 					// Only mapping items that need to be mapped.
 					// Items not in this list are doing faster
 					// (non-string) checks
-					{ key: 'Date',     val: 3 },
-					{ key: 'Number',   val: 5 },
-					{ key: 'String',   val: 6 },
-					{ key: 'Object',   val: 7 },
-					{ key: 'Array',    val: 8 },
-					{ key: 'RegExp',   val: 9 },
-					{ key: 'Function', val: 11 }
+					{ key: sDate,     val: _types[sDate]     },
+					{ key: sNumber,   val: _types[sNumber]   },
+					{ key: sString,   val: _types[sString]   },
+					{ key: sObject,   val: _types[sObject]   },
+					{ key: sArray,    val: _types[sArray]    },
+					{ key: sRegExp,   val: _types[sRegExp]   },
+					{ key: sFunction, val: _types[sFunction] }
 				],
 				idx = types.length;
 			while (idx--) {
@@ -60,15 +96,6 @@
 			return map;
 
 		}()),
-
-		/**
-		 * Element check from Underscore
-		 * @param  {Value}  obj
-		 * @return {Boolean}
-		 */
-		_isElement = function(obj) {
-			return !!(obj && obj.nodeType === 1);
-		},
 
 		/**
 		 * Changes arguments to an array
@@ -82,52 +109,32 @@
 				arr[idx] = arraylike[idx];
 			}
 			return arr;
-		},
-
-		/**
-		 * Possible values
-		 * @type {Object}
-		 */
-		_types = {
-			'null': 0,
-			'undefined': 1,
-			'Infinity': 2,
-			'Date': 3,
-			'NaN': 4,
-			'Number': 5,
-			'String': 6,
-			'Object': 7,
-			'Array': 8,
-			'RegExp': 9,
-			'Boolean': 10,
-			'Function': 11,
-			'Element': 12
 		};
 
 	var _getConfigurationType = function(val) {
-		if (val === null) { return _types['null']; }
-		if (val === undefined) { return _types['undefined']; }
+		if (val === null) { return _types[sNull]; }
+		if (val === undefined) { return _types[sUndefined]; }
 
 		// we have something, but don't know what
 		if (val.name === undefined) {
-			if (val !== +val) { return _types['NaN']; } // NaN check
-			return _types['Infinity']; // Infinity check
+			if (val !== +val) { return _types[sNaN]; } // NaN check
+			return _types[sInfinity]; // Infinity check
 		}
 
 		return _types[val.name];
 	};
 
 	var _getParameterType = function(val) {
-		if (val === null) { return _types['null']; }
-		if (val === undefined) { return _types['undefined']; }
-		if (val === true || val === false) { return _types['Boolean']; }
-		if (_isElement(val)) { return _types['Element']; }
+		if (val === null) { return _types[sNull]; }
+		if (val === undefined) { return _types[sUndefined]; }
+		if (val === true || val === false) { return _types[sBoolean]; }
+		if (!!(val && val.nodeType === 1)) { return _types[sElement]; } // Element check from Underscore
 
 		var typeString = _toString(val);
-		if (_checkMap[typeString] === _types['Number']) {
-			if (val !== +val) { return _types['NaN']; } // NaN check
-			if (!isFinite(val)) { return _types['Infinity']; } // Finite check
-			return _types['Number']; // definitely a number
+		if (_checkMap[typeString] === _types[sNumber]) {
+			if (val !== +val) { return _types[sNaN]; } // NaN check
+			if (!isFinite(val)) { return _types[sInfinity]; } // Finite check
+			return _types[sNumber]; // definitely a number
 		}
 
 		return _checkMap[typeString];
