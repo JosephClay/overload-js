@@ -3,37 +3,100 @@
  * Copyright (c) 2012-2014 Joe Clay; Licensed  */
 (function(root, undefined) {
 
-		/**
-		 * Cached reference to Object.prototype.toString
-		 * for type checking
-		 * @type {Function}
-		 */
-	var _toString = Object.prototype.toString;
+	// Variablizing the strings for consistency
+	// and to avoid harmful dot-notation look-ups with
+	// javascript keywords
+	var sNull = 'Null',
+		sUndefined = 'Undefined',
+		sInfinity = 'Infinity',
+		sDate = 'Date',
+		sNaN = 'NaN',
+		sNumber = 'Number',
+		sString = 'String',
+		sObject = 'Object',
+		sArray = 'Array',
+		sRegExp = 'RegExp',
+		sBoolean = 'Boolean',
+		sFunction = 'Function',
+		sElement = 'Element';
+
+	// Utilizing the non-standard (but available in modern browsers) Global Object names
+	// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+	// Provide a polyfill for items without names
+	(function() {
+		var globalObjects = [
+			sDate,
+			sNumber,
+			sString,
+			sObject,
+			sArray,
+			sRegExp,
+			sBoolean,
+			sFunction,
+			sElement
+		],
+		idx = globalObjects.length;
+		while (idx--) {
+			if (!root[globalObjects[idx]].name) {
+				root[globalObjects[idx]].name = globalObjects[idx];
+			}
+		}
+	}());
+
+	/**
+	 * Possible values
+	 * @type {Object}
+	 */
+	var _types = {};
+	_types[sNull] = 0;
+	_types[sUndefined] = 1;
+	_types[sInfinity] = 2;
+	_types[sDate] = 3;
+	_types[sNaN] = 4;
+	_types[sNumber] = 5;
+	_types[sString] = 6;
+	_types[sObject] = 7;
+	_types[sArray] = 8;
+	_types[sRegExp] = 9;
+	_types[sBoolean] = 10;
+	_types[sFunction] = 11;
+	_types[sElement] = 12;
+
+	/**
+	 * Cached reference to Object.prototype.toString
+	 * for type checking
+	 * @type {Function}
+	 */
+	var _toString = (function(toString) {
+			return function(obj) {
+				return toString.call(obj);
+			};
+		}(Object.prototype.toString)),
 
 		/**
 		 * Type checks
-		 * @return {Function{}}
 		 */
-		_check = (function() {
+		_checkMap = (function() {
 
-			var checks = {},
-				types = ['Function', 'String', 'Number', 'Date', 'RegExp', 'Array'],
+			var map = {},
+				types = [
+					// Only mapping items that need to be mapped.
+					// Items not in this list are doing faster
+					// (non-string) checks
+					{ key: sDate,     val: _types[sDate]     },
+					{ key: sNumber,   val: _types[sNumber]   },
+					{ key: sString,   val: _types[sString]   },
+					{ key: sObject,   val: _types[sObject]   },
+					{ key: sArray,    val: _types[sArray]    },
+					{ key: sRegExp,   val: _types[sRegExp]   },
+					{ key: sFunction, val: _types[sFunction] }
+				],
 				idx = types.length;
 			while (idx--) {
-				checks[types[idx].toLowerCase()] = (function(name) {
-					return function(obj) {
-						return _toString.call(obj) === '[object ' + name + ']';
-					};	
-				}(types[idx]));
+				map['[object ' + types[idx].key + ']'] = types[idx].val;
 			}
 
-			checks.array = Array.isArray || checks.array;
-
-			checks.element = function(obj) {
-				return !!(obj && obj.nodeType === 1);
-			};
-
-			return checks;
+			return map;
 
 		}()),
 
@@ -49,61 +112,35 @@
 				arr[idx] = arraylike[idx];
 			}
 			return arr;
-		},
-
-		/**
-		 * Possible values
-		 * @type {Object}
-		 */
-		_types = {
-			'null': 0,
-			'undefined': 1,
-			'Infinity': 2,
-			'Date': 3,
-			'NaN': 4,
-			'Number': 5,
-			'String': 6,
-			'Object': 7,
-			'Array': 8,
-			'RegExp': 9,
-			'Boolean': 10,
-			'Function': 11,
-			'Element': 12
 		};
 
 	var _getConfigurationType = function(val) {
-		if (val === null) { return _types['null']; }
-		if (val === undefined) { return _types['undefined']; }
+		if (val === null) { return _types[sNull]; }
+		if (val === undefined) { return _types[sUndefined]; }
 
 		// we have something, but don't know what
 		if (val.name === undefined) {
-			if (val !== +val) { return _types['NaN']; } // NaN check
-			return _types['Infinity']; // Infinity check
+			if (val !== +val) { return _types[sNaN]; } // NaN check
+			return _types[sInfinity]; // Infinity check
 		}
 
 		return _types[val.name];
 	};
 
 	var _getParameterType = function(val) {
-		if (val === null) { return _types['null']; }
-		if (val === undefined) { return _types['undefined']; }
-		if (val === true || val === false) { return _types['Boolean']; }
+		if (val === null) { return _types[sNull]; }
+		if (val === undefined) { return _types[sUndefined]; }
+		if (val === true || val === false) { return _types[sBoolean]; }
+		if (!!(val && val.nodeType === 1)) { return _types[sElement]; } // Element check from Underscore
 
-		if (_check.number(val)) {
-			if (val !== +val) { return _types['NaN']; } // NaN check
-			if (!isFinite(val)) { return _types['Infinity']; } // Finite check
-			return _types['Number']; // definitely a number
+		var typeString = _toString(val);
+		if (_checkMap[typeString] === _types[sNumber]) {
+			if (val !== +val) { return _types[sNaN]; } // NaN check
+			if (!isFinite(val)) { return _types[sInfinity]; } // Finite check
+			return _types[sNumber]; // definitely a number
 		}
 
-		if (_check.string(val)) { return _types['String']; }
-		if (_check.function(val)) { return _types['Function']; }
-		if (_check.array(val)) { return _types['Array']; }
-		if (_check.regexp(val)) { return _types['RegExp']; }
-		if (_check.date(val)) { return _types['Date']; }
-		if (_check.element(val)) { return _types['Element']; }
-		
-		// Nothing else matches, it's a plain object
-		return _types['Object'];
+		return _checkMap[typeString];
 	};
 
 	var _convertConfigurationTypes = function(args) {
@@ -186,7 +223,8 @@
 
 	var _matchAny = function(args, val) {
 		var type = _getParameterType(val),
-			idx = args.length;
+			idx = args.length,
+			mapItem;
 
 		while (idx--) {
 			mapItem = args[idx];
@@ -241,6 +279,8 @@
 	 * @constructor
 	 */
 	var Overload = function() {
+		if (this.constructor !== Overload) { return new Overload(); }
+
 		/**
 		 * Methods mapped to argument types
 		 * Lazily instanciated
