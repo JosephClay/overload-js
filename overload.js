@@ -1,5 +1,28 @@
 (function(root, undefined) {
 
+	// Utilizing the non-standard (but available in modern browsers) Global Object names
+	// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
+	// Provide a polyfill for items without names
+	(function() {
+		var objects = [
+			'Date',
+			'Number',
+			'String',
+			'Object',
+			'Array',
+			'RegExp',
+			'Boolean',
+			'Function',
+			'Element'
+		],
+		idx = objects.length;
+		while (idx--) {
+			if (!root[objects[idx]].name) {
+				root[objects[idx]].name = objects[idx];
+			}
+		}
+	}());
+
 		/**
 		 * Cached reference to Object.prototype.toString
 		 * for type checking
