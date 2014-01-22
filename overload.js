@@ -269,6 +269,8 @@
 	 * @constructor
 	 */
 	var Overload = function() {
+		if (this.constructor !== Overload) { return new Overload(); }
+
 		/**
 		 * Methods mapped to argument types
 		 * Lazily instanciated
