@@ -3,7 +3,7 @@ OverloadJS
 
 Function overloading for JavaScript
 
-Provides tools to mimic [function overloading][1] that is present in most stictly-types languages.
+Provides tools to mimic [function overloading][1] that is present in most stictly-types languages. Prevents messy, long, if-statement, type-checking functions that are hard to read and maintain.
 
 [1]: <https://en.wikipedia.org/wiki/Function_overloading>
 
