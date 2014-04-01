@@ -131,7 +131,7 @@
 		if (val === null) { return _types[sNull]; }
 		if (val === undefined) { return _types[sUndefined]; }
 		if (val === true || val === false) { return _types[sBoolean]; }
-		if (!!(val && val.nodeType === 1)) { return _types[sElement]; } // Element check from Underscore
+		if (val && val.nodeType === 1) { return _types[sElement]; } // Element check from Underscore
 
 		var typeString = _toString(val);
 		if (_checkMap[typeString] === _types[sNumber]) {
