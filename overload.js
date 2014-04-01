@@ -70,34 +70,35 @@
 			return function(obj) {
 				return toString.call(obj);
 			};
-		}(Object.prototype.toString)),
+		}(({}).toString)),
 
 		/**
 		 * Type checks
 		 */
-		_checkMap = (function() {
+		_checkMap = (function(map) {
 
-			var map = {},
-				types = [
+			var types = [
 					// Only mapping items that need to be mapped.
 					// Items not in this list are doing faster
 					// (non-string) checks
-					{ key: sDate,     val: _types[sDate]     },
-					{ key: sNumber,   val: _types[sNumber]   },
-					{ key: sString,   val: _types[sString]   },
-					{ key: sObject,   val: _types[sObject]   },
-					{ key: sArray,    val: _types[sArray]    },
-					{ key: sRegExp,   val: _types[sRegExp]   },
-					{ key: sFunction, val: _types[sFunction] }
+					// 
+					// k = key, v = value
+					{ k: sDate,     v: _types[sDate]     },
+					{ k: sNumber,   v: _types[sNumber]   },
+					{ k: sString,   v: _types[sString]   },
+					{ k: sObject,   v: _types[sObject]   },
+					{ k: sArray,    v: _types[sArray]    },
+					{ k: sRegExp,   v: _types[sRegExp]   },
+					{ k: sFunction, v: _types[sFunction] }
 				],
 				idx = types.length;
 			while (idx--) {
-				map['[object ' + types[idx].key + ']'] = types[idx].val;
+				map['[object ' + types[idx].k + ']'] = types[idx].v;
 			}
 
 			return map;
 
-		}()),
+		}({})),
 
 		/**
 		 * Changes arguments to an array
@@ -285,21 +286,21 @@
 		 * Lazily instanciated
 		 * @type {Array}
 		 */
-		this._argMappings = null;
+		// this._argMaps;
 		
 		/**
 		 * Methods mapped to argument lengths
 		 * Lazily instanciated
 		 * @type {Array}
 		 */
-		this._lengthMappings = null;
+		// this._lenMaps;
 
 		/**
 		 * A fallback function if none
 		 * of the criteria match on a call
 		 * @type {Function}
 		 */
-		this._fallback = null;
+		// this._f;
 	};
 
 	Overload.defineType = function(name, check) {
@@ -318,7 +319,7 @@
 
 			return {
 				use: function(method) {
-					var argMappings = self._argMappings || (self._argMappings = []);
+					var argMappings = self._argMaps || (self._argMaps = []);
 					argMappings.push({
 						params: _convertConfigurationTypes(args),
 						method: method
@@ -332,7 +333,7 @@
 			var self = this;
 			return {
 				use: function(method) {
-					var lengthMappings = self._lengthMappings || (self._lengthMappings = []);
+					var lengthMappings = self._lenMaps || (self._lenMaps = []);
 					lengthMappings.push({
 						length: (num === undefined) ? method.length : num,
 						method: method
@@ -347,7 +348,7 @@
 		},
 
 		fallback: function(method) {
-			this._fallback = method;
+			this._f = method;
 		},
 
 		call: function() {
@@ -378,20 +379,20 @@
 
 			// Any argument match, of course, already matches
 			// the length match, so this should be done first
-			var argMatch = _getArgumentMatch(this._argMappings, args);
+			var argMatch = _getArgumentMatch(this._argMaps, args);
 			if (argMatch) {
 				return argMatch.method.apply(context, args);
 			}
 
 			// Check for a length match
-			var lengthMatch = _getLengthMatch(this._lengthMappings, args);
+			var lengthMatch = _getLengthMatch(this._lenMaps, args);
 			if (lengthMatch) {
 				return lengthMatch.method.apply(context, args);
 			}
 
 			// Check for a fallback
-			if (this._fallback) {
-				return this._fallback.apply(context, args);
+			if (this._f) {
+				return this._f.apply(context, args);
 			}
 
 			// Error
