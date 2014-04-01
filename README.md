@@ -177,3 +177,10 @@ Overload.prototype.err = function() {
 	console.log('there was an error');
 };
 ```
+
+Support
+----------------
+
+Modern browsers, IE8+
+
+It may work in older (IE7 and lower) browser, but no guarantees, it hasn't been tested.
