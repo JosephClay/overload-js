@@ -3,7 +3,7 @@ OverloadJS
 
 Function overloading for JavaScript
 
-Provides tools to mimic [function overloading][1] that is present in most stictly-types languages.
+Provides tools to mimic [function overloading][1] that is present in most stictly-types languages. Prevents messy, long, if-statement, type-checking functions that are hard to read and maintain.
 
 [1]: <https://en.wikipedia.org/wiki/Function_overloading>
 
@@ -124,8 +124,56 @@ method(0); // falsy
 method(1); // truthy
 ```
 
-### ToDo's
--   Optimizations
--   Smaller file size
--   Document fallback and length
--   Implement infinite arguments
+Overloading by length
+----------------
+
+In addition to overloading by type, argument length can be used.
+If a number is not passed, the `function.length` will be used.
+
+```javascript
+var method = Overload()
+		.length(0).use(function() {
+			console.log('0 args');
+		})
+		.length(1).use(function(a) {
+			console.log('1 arg');
+		})
+		.length().use(function(a, b, c) {
+			console.log('3 args');
+		})
+		.expose();
+
+method(); // '0 args'
+method({}); // '1 arg'
+method(null, [], {}); // '3 args'
+```
+
+If `args` and `length` are used in the overload, args will be matched 
+first, followed by length.
+
+Fallback
+----------------
+
+A fallback function can be defined via the `fallback` method.
+
+```javascript
+var method = Overload().args(String).use(function(a) {
+				console.log(a);
+			})
+			.fallback(function() {
+				console.log('handled!');
+			})
+			.expose();
+method('hello'); // 'hello'
+method(); // 'handled'
+```
+
+If a fallback is not defined and the exposed method is called
+without a matching function, an error will be thrown. The error
+can be handled by defining your own `err` method on `Overload`.
+
+```javascript
+Overload.prototype.err = function() {
+	console.log('there was an error');
+};
+```
