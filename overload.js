@@ -344,7 +344,7 @@
 		},
 
 		err: function(args) {
-			throw new Error('No methods matched arguments: ', args, this);
+			throw 'Overload - exception: No methods matched';
 		},
 
 		fallback: function(method) {
