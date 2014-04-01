@@ -349,6 +349,7 @@
 
 		fallback: function(method) {
 			this._f = method;
+			return this;
 		},
 
 		call: function() {
