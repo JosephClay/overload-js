@@ -3,39 +3,41 @@
 	// Variablizing the strings for consistency
 	// and to avoid harmful dot-notation look-ups with
 	// javascript keywords
-	var sNull = 'Null',
+	var sNull      = 'Null',
 		sUndefined = 'Undefined',
-		sInfinity = 'Infinity',
-		sDate = 'Date',
-		sNaN = 'NaN',
-		sNumber = 'Number',
-		sString = 'String',
-		sObject = 'Object',
-		sArray = 'Array',
-		sRegExp = 'RegExp',
-		sBoolean = 'Boolean',
-		sFunction = 'Function',
-		sElement = 'Element';
+		sInfinity  = 'Infinity',
+		sDate      = 'Date',
+		sNaN       = 'NaN',
+		sNumber    = 'Number',
+		sString    = 'String',
+		sObject    = 'Object',
+		sArray     = 'Array',
+		sRegExp    = 'RegExp',
+		sBoolean   = 'Boolean',
+		sFunction  = 'Function',
+		sElement   = 'Element';
 
 	// Utilizing the non-standard (but available in modern browsers) Global Object names
 	// see https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/name
 	// Provide a polyfill for items without names
 	(function() {
 		var globalObjects = [
-			sDate,
-			sNumber,
-			sString,
-			sObject,
-			sArray,
-			sRegExp,
-			sBoolean,
-			sFunction,
-			sElement
-		],
-		idx = globalObjects.length;
+				sDate,
+				sNumber,
+				sString,
+				sObject,
+				sArray,
+				sRegExp,
+				sBoolean,
+				sFunction,
+				sElement
+			],
+			idx = globalObjects.length,
+			globalObject;
 		while (idx--) {
-			if (!root[globalObjects[idx]].name) {
-				root[globalObjects[idx]].name = globalObjects[idx];
+			globalObject = globalObjects[idx];
+			if (!root[globalObject].name) {
+				root[globalObject].name = globalObject;
 			}
 		}
 	}());
@@ -45,19 +47,19 @@
 	 * @type {Object}
 	 */
 	var _types = {};
-	_types[sNull] = 0;
+	_types[sNull]      = 0;
 	_types[sUndefined] = 1;
-	_types[sInfinity] = 2;
-	_types[sDate] = 3;
-	_types[sNaN] = 4;
-	_types[sNumber] = 5;
-	_types[sString] = 6;
-	_types[sObject] = 7;
-	_types[sArray] = 8;
-	_types[sRegExp] = 9;
-	_types[sBoolean] = 10;
-	_types[sFunction] = 11;
-	_types[sElement] = 12;
+	_types[sInfinity]  = 2;
+	_types[sDate]      = 3;
+	_types[sNaN]       = 4;
+	_types[sNumber]    = 5;
+	_types[sString]    = 6;
+	_types[sObject]    = 7;
+	_types[sArray]     = 8;
+	_types[sRegExp]    = 9;
+	_types[sBoolean]   = 10;
+	_types[sFunction]  = 11;
+	_types[sElement]   = 12;
 
 	/**
 	 * Cached reference to Object.prototype.toString
