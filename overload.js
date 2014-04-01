@@ -110,9 +110,24 @@
 				return slice.call(arraylike);
 			};
 		}([].slice));
+
+	// Reference: https://gist.github.com/dhm116/1790197
+	if (!('bind' in Function.prototype)) {
+		Function.prototype.bind = function(owner) {
+			var self = this;
+			
+			if (arguments.length <= 1) {
+				return function() {
+					return self.apply(owner, arguments);
+				};
 			}
-			return arr;
+
+			var args = _slice(arguments);
+			return function() {
+				return self.apply(owner, arguments.length === 0 ? args : args.concat(_slice(arguments)));
+			};
 		};
+	}
 
 	var _getConfigurationType = function(val) {
 		if (val === null) { return _types[sNull]; }
