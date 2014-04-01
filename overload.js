@@ -105,11 +105,11 @@
 		 * @param  {Arguments} arraylike
 		 * @return {Array}
 		 */
-		_toArray = function(arraylike) {
-			var arr = [],
-				idx = 0, length = arraylike.length;
-			for (; idx < length; idx++) {
-				arr[idx] = arraylike[idx];
+		_slice = (function(slice) {
+			return function(arraylike) {
+				return slice.call(arraylike);
+			};
+		}([].slice));
 			}
 			return arr;
 		};
@@ -352,7 +352,7 @@
 		},
 
 		call: function() {
-			var args = _toArray(arguments);
+			var args = _slice(arguments);
 			return this._call(args.shift(), args);
 		},
 
