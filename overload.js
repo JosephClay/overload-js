@@ -279,7 +279,7 @@
 	 * @constructor
 	 */
 	var Overload = function() {
-		if (this.constructor !== Overload) { return new Overload(); }
+		if (!(this instanceof Overload)) { return new Overload(); }
 
 		/**
 		 * Methods mapped to argument types
