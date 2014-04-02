@@ -4,11 +4,8 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-concat');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
-	grunt.loadNpmTasks('grunt-contrib-qunit');
-	grunt.loadNpmTasks('grunt-contrib-watch');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-rename');
-
-	var srcFiles = [ 'overload.js' ];
 
 	grunt.initConfig({
 		pkg: grunt.file.readJSON('package.json'),
@@ -23,6 +20,7 @@ module.exports = function(grunt) {
 		},
 		filenames: {
 			full: '<%= pkg.name %>-<%= pkg.version %>.js',
+			min: '<%= pkg.name %>.min.js',
 			minified: '<%= pkg.name %>-<%= pkg.version %>.min.js',
 			sourcemap: '<%= pkg.name %>-<%= pkg.version %>.min.map'
 		},
@@ -42,12 +40,13 @@ module.exports = function(grunt) {
 				separator: '\n\n//----\n\n'
 			},
 			dist: {
-				src: srcFiles,
+				src: [ 'Overload.js' ],
 				dest: '<%= filenames.full %>'
 			}
 		},
 		uglify: {
 			options: {
+				banner: '<%= banner %>',
 				sourceMap: '<%= filenames.sourcemap %>'
 			},
 			dist: {
@@ -55,7 +54,14 @@ module.exports = function(grunt) {
 				dest: '<%= filenames.minified %>'
 			}
 		},
+		copy: {
+			src: '<%= filenames.minified %>'
+		},
 		rename: {
+			min: {
+				src: 'src',
+				dest: '<%= filenames.min %>'
+			},
 			full: {
 				src: '<%= filenames.full %>',
 				dest: '<%= directories.dist %>/<%= filenames.full %>'
@@ -71,6 +77,6 @@ module.exports = function(grunt) {
 		}
 	});
 
-	grunt.registerTask('default', ['clean', 'jshint', 'concat', 'uglify', 'rename']);
+	grunt.registerTask('default', ['clean', 'jshint', 'concat', 'uglify', 'copy', 'rename']);
 
 };
