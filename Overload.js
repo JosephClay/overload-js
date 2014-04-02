@@ -323,6 +323,10 @@
 		return (O[name] = custom);
 	};
 
+	Overload.silence = function() {
+		Overload.prototype.err = function() {};
+	};
+
 	Overload.prototype = {
 
 		/** @constructor */
