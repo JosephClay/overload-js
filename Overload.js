@@ -358,7 +358,7 @@
 			};
 		},
 
-		err: function(args) {
+		err: function() {
 			throw 'Overload - exception: No methods matched';
 		},
 
