@@ -1,4 +1,4 @@
-/*! OverloadJS - v0.0.2 - 2014-04-01
+/*! Overload - v0.0.2 - 2014-04-01
  * https://github.com/JosephClay/Overload
  * Copyright (c) 2012-2014 Joe Clay; Licensed  */
 (function(root, undefined) {
