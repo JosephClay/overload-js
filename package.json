@@ -1,25 +1,24 @@
 {
-	"name": "Overload",
-	"title": "Overload",
-	"description": "Method overloading in JavaScript",
-	"version": "0.0.2",
-	"homepage": "https://github.com/JosephClay/Overload",
-	"author": {
-		"name": "Joe Clay",
-		"email": "testingriven@gmail.com"
-	},
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/JosephClay/Overload.git"
-	},
-	"devDependencies": {
-		"grunt": "~0.4.1",
-		"grunt-contrib-jshint": "~0.6.0",
-		"grunt-contrib-qunit": "~0.2.0",
-		"grunt-contrib-concat": "~0.3.0",
-		"grunt-contrib-uglify": "~0.2.0",
-		"grunt-contrib-watch": "~0.4.0",
-		"grunt-contrib-clean": "~0.4.0",
-		"grunt-rename": "~0.1.3"
-	}
+  "name": "Overload",
+  "title": "Overload",
+  "description": "Method overloading in JavaScript",
+  "version": "0.0.2",
+  "homepage": "https://github.com/JosephClay/Overload",
+  "author": {
+    "name": "Joe Clay",
+    "email": "testingriven@gmail.com"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/JosephClay/Overload.git"
+  },
+  "devDependencies": {
+    "grunt": "~0.4.1",
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-qunit": "~0.2.0",
+    "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-uglify": "~0.2.0",
+    "grunt-contrib-copy": "^0.5.0",
+    "grunt-rename": "~0.1.3"
+  }
 }
