@@ -171,7 +171,7 @@ method(); // 'handled'
 If a fallback is not defined and the exposed method is called
 without a matching function, an error will be thrown...
 
-Erros
+Errors
 ----------------
 
 The error from unmatched calls can be handled by defining your own `err` method on `Overload`.
