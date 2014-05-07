@@ -81,7 +81,7 @@
 					// Only mapping items that need to be mapped.
 					// Items not in this list are doing faster
 					// (non-string) checks
-					// 
+					//
 					// k = key, v = value
 					{ k: sDate,     v: _types[sDate]     },
 					{ k: sNumber,   v: _types[sNumber]   },
@@ -115,7 +115,7 @@
 	if (!('bind' in Function.prototype)) {
 		Function.prototype.bind = function(owner) {
 			var self = this;
-			
+
 			if (arguments.length <= 1) {
 				return function() {
 					return self.apply(owner, arguments);
@@ -302,7 +302,7 @@
 		 * @type {Array}
 		 */
 		// this._argMaps;
-		
+
 		/**
 		 * Methods mapped to argument lengths
 		 * Lazily instanciated
@@ -373,6 +373,7 @@
 		},
 
 		apply: function(context, args) {
+			args = (args && args.callee) ? _slice(args) : args;
 			return this._call(context, args);
 		},
 
