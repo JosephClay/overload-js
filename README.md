@@ -3,7 +3,7 @@ OverloadJS
 
 Function overloading for JavaScript for ~1kb, Minified and Gzipped
 
-Provides tools to mimic [function overloading][1] that is present in most stictly-types languages. Prevents messy, long, if-statement, type-checking functions that are hard to read and maintain.
+Provides tools to mimic [function overloading][1] that is present in most strictly-types languages. Prevents messy, long, if-statement, type-checking functions that are hard to read and maintain.
 
 [1]: <https://en.wikipedia.org/wiki/Function_overloading>
 
@@ -13,25 +13,39 @@ Basic Usage
 
 ```javascript
 var hello = (function() {
-	
-	var overload = new Overload();
+
 	var secret = '!';
-	var getter = function() {
-		return secret;
-	};
-	var setter = function(val) {
-		secret = val;
-	};
 
-	overload.args().use(getter)
-			.args(String).use(setter);
-
-	return overload.expose();
+	return Overload().args().use(function() {
+				return secret;
+			})
+			.args(String).use(function(val) {
+				secret = val;
+			})
+			.expose();
 
 }());
 
 hello('world'); // calls setter
 hello(); // returns 'world'
+hello(0); // throws a Type Error
+```
+Detectable types
+----------------
+```javascript
+null
+undefined
+Infinity
+Date
+NaN
+Number
+String
+Object
+Array
+RegExp
+Boolean
+Function
+Element
 ```
 
 Custom types
@@ -57,24 +71,6 @@ var method = Overload().args(O.$).use(function($elem) {
 method(); // fails
 method(''); // fails
 method($('body')); // succeeds
-```
-
-Detectable types
-----------------
-```javascript
-null
-undefined
-Infinity
-Date
-NaN
-Number
-String
-Object
-Array
-RegExp
-Boolean
-Function
-Element
 ```
 
 Additional types
