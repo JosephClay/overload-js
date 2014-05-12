@@ -241,15 +241,13 @@ test('fallback', function() {
 
 test('passed parameters', function() {
 	var a = function(param) { return param; };
-
-	var o = new Overload();
-	o.args(O.any(String, Number, Boolean)).use(a);
-
-	var method = o.expose();
+	var b = function() { return 'fallback'; };
+	var method = Overload().args(O.any(String, Number, Boolean)).use(a).fallback(b).expose();
 
 	equal(method('one'), 'one', 'String passed and returned');
 	equal(method(2), 2, 'Number passed and returned');
 	equal(method(true), true, 'Boolean passed and returned');
+	equal(method(null), 'fallback', 'No items matched and defered to the fallback');
 });
 
 test('custom', function() {
@@ -264,6 +262,9 @@ test('custom', function() {
 	var o = new Overload();
 	o.args(O.$).use(a);
 	
-	var method = o.expose();
-	strictEqual(method($('body')), 0, 'Custom function works as a definition');
+	var method1 = o.expose();
+	strictEqual(method1($('body')), 0, 'Custom function works as a definition');
+	
+	var method2 = new Overload().args(O.any(Boolean, O.$)).use(a).expose();
+	strictEqual(method2($('body')), 0, 'Custom function work inside any() custom definition');
 });
