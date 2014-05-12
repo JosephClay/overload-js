@@ -245,10 +245,10 @@
 			mapItem = args[idx];
 
 			if (mapItem instanceof Custom) {
-				if (mapItem.check(args[idx])) {
+				if (mapItem.check(val)) {
 					return true;
 				} else {
-					return false;
+					continue;
 				}
 			}
 
