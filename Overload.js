@@ -211,7 +211,7 @@
 	};
 
 	var _getArgumentMatch = function(mappings, args) {
-		mappings = mappings || _noopArr;
+		if (!mappings) { return null; }
 
 		var argTypes = _convertParametersTypes(args),
 			idx = 0, length = mappings.length;
@@ -225,7 +225,7 @@
 	};
 
 	var _getLengthMatch = function(mappings, args) {
-		mappings = mappings || _noopArr;
+		if (!mappings) { return null; }
 
 		var argLength = args.length,
 			idx = 0, length = mappings.length;
