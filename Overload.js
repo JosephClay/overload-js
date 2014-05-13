@@ -195,7 +195,9 @@
 			mapItem = map[idx];
 
 			if (mapItem instanceof Custom) {
-				if (!mapItem.check(args[idx])) {
+				if (mapItem.check(args[idx])) {
+					continue;
+				} else {
 					return false;
 				}
 			}
