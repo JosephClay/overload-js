@@ -270,6 +270,9 @@
 	};
 
 	var O = {
+		wild: new Custom(function() {
+			return true;
+		}),
 		truthy: new Custom(function(val) {
 			return (!!val) === true;
 		}),
