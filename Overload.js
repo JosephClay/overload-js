@@ -274,10 +274,10 @@
 			return true;
 		}),
 		truthy: new Custom(function(val) {
-			return (!!val) === true;
+			return !!val === true;
 		}),
 		falsy: new Custom(function(val) {
-			return (!!val) === false;
+			return !!val === false;
 		}),
 		any: function() {
 			var args = _convertConfigurationTypes(arguments);
