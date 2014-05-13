@@ -72,6 +72,8 @@
 			};
 		}(({}).toString)),
 
+		_noopArr = [],
+
 		/**
 		 * Type checks
 		 */
@@ -395,7 +397,7 @@
 		},
 
 		_call: function(context, args) {
-			args = args || [];
+			args = args || _noopArr;
 
 			// Any argument match, of course, already matches
 			// the length match, so this should be done first
