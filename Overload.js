@@ -136,7 +136,8 @@
 		if (val === undefined) { return _types[sUndefined]; }
 
 		// we have something, but don't know what
-		if (val.name === undefined) {
+		if (!val.name) {
+			if (val === root[sElement]) { return _types[sElement]; } // Firefox doesn't allow setting the name of Element
 			if (val !== +val) { return _types[sNaN]; } // NaN check
 			return _types[sInfinity]; // Infinity check
 		}
