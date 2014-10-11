@@ -1,17 +1,17 @@
 {
-  "name": "Overload",
-  "title": "Overload",
+  "name": "overload-js",
+  "title": "overload-js",
   "main": "Overload.js",
   "description": "Method overloading in JavaScript",
   "version": "0.1.0",
-  "homepage": "https://github.com/JosephClay/Overload",
+  "homepage": "https://github.com/JosephClay/overload-js",
   "author": {
     "name": "Joe Clay",
     "email": "testingriven@gmail.com"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/JosephClay/Overload.git"
+    "url": "https://github.com/JosephClay/overload-js.git"
   },
   "devDependencies": {
     "grunt": "~0.4.1",
