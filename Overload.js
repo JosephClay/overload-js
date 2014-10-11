@@ -324,6 +324,8 @@
 		// this._f;
 	};
 
+	Overload.O = O;
+
 	Overload.defineType = function(name, check) {
 		var custom = new Custom(check);
 		return (O[name] = custom);
@@ -423,7 +425,11 @@
 		}
 	};
 
-	root.Overload = Overload;
-	root.O = O;
+	if (typeof module !== 'undefined' && module.exports) {
+        module.exports = Overload;
+    } else {
+		root.Overload = Overload;
+		root.O = Overload.O;
+    }
 
-}(this));
+}(window));
