@@ -7,6 +7,7 @@ Provides tools to mimic [function overloading][1] that is present in most strict
 
 [1]: <https://en.wikipedia.org/wiki/Function_overloading>
 
+`npm install overload-js`
 
 Basic Usage
 -----------
@@ -51,7 +52,7 @@ Element
 Custom types
 ----------------
 
-A custom type can be defined by passing a `string` and validation `function` to 
+A custom type can be defined by passing a `string` and validation `function` to
 `defineType`. The validation function will be passed the value to validate
 and expects a `boolean` return.
 
@@ -144,7 +145,7 @@ method({}); // '1 arg'
 method(null, [], {}); // '3 args'
 ```
 
-If `args` and `length` are used in the overload, args will be matched 
+If `args` and `length` are used in the overload, args will be matched
 first, followed by length.
 
 Fallback
