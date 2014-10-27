@@ -22,9 +22,9 @@ test('method registration', function() {
 });
 
 test('overload paths', function() {
-	var overload = overload();
+	var ov = overload();
 
-	overload.args(null).use(function() { return null; })
+	ov.args(null).use(function() { return null; })
 			.args(undefined).use(function() { return undefined; })
 			.args(Infinity).use(function() { return Infinity; })
 			.args(Date).use(function() { return Date; })
@@ -38,7 +38,7 @@ test('overload paths', function() {
 			.args(Function).use(function() { return Function; })
 			.args(Element).use(function() { return Element; });
 
-	var method = overload.expose();
+	var method = ov.expose();
 
 	var types = [
 		{
@@ -132,11 +132,11 @@ test('"this" context', function() {
 test('truthy', function() {
 	var a = function() { return true; };
 
-	var o = overload();
-	o.err = function() { return 'error'; };
-	o.args(o.truthy).use(a);
+	var ov = overload();
+	ov.err = function() { return 'error'; };
+	ov.args(o.truthy).use(a);
 
-	var method = o.expose();
+	var method = ov.expose();
 
 	strictEqual(method(1), true, 'truthy works with #1');
 	strictEqual(method(true), true, 'truthy works with true');
@@ -149,11 +149,11 @@ test('truthy', function() {
 test('falsy', function() {
 	var a = function() { return false; };
 
-	var o = overload();
-	o.err = function() { return 'error'; };
-	o.args(o.falsy).use(a);
+	var ov = overload();
+	ov.err = function() { return 'error'; };
+	ov.args(o.falsy).use(a);
 
-	var method = o.expose();
+	var method = ov.expose();
 
 	strictEqual(method(0), false, 'falsy works with #0');
 	strictEqual(method(false), false, 'falsy works with false');
@@ -190,12 +190,12 @@ test('any', function() {
 	var a = function() { return 0; },
 		b = function() { return 1; };
 
-	var o = overload();
-	o.err = function() { return 'error'; };
-	o.args(o.any(String, Boolean, Date)).use(a);
-	o.args(o.any(Array, Object, Function)).use(b);
+	var ov = overload();
+	ov.err = function() { return 'error'; };
+	ov.args(o.any(String, Boolean, Date)).use(a);
+	ov.args(o.any(Array, Object, Function)).use(b);
 
-	var method = o.expose();
+	var method = ov.expose();
 
 	strictEqual(method(''), 0, 'Any first test passed');
 	strictEqual(method(true), 0, 'Any first test passed');
@@ -210,12 +210,12 @@ test('except', function() {
 	var a = function() { return 0; },
 		b = function() { return 1; };
 
-	var o = overload();
-	o.err = function() { return 'error'; };
-	o.args(o.except(String, Boolean, Date)).use(a);
-	o.args(o.except(Array, Object, Function)).use(b);
+	var ov = overload();
+	ov.err = function() { return 'error'; };
+	ov.args(o.except(String, Boolean, Date)).use(a);
+	ov.args(o.except(Array, Object, Function)).use(b);
 
-	var method = o.expose();
+	var method = ov.expose();
 
 	strictEqual(method(''), 1, 'Except first test passed');
 	strictEqual(method(true), 1, 'Except first test passed');
@@ -259,10 +259,10 @@ test('custom', function() {
 
 	var a = function() { return 0; };
 
-	var o = overload();
-	o.args(o.$).use(a);
+	var ov = overload();
+	ov.args(o.$).use(a);
 
-	var method1 = o.expose();
+	var method1 = ov.expose();
 	strictEqual(method1($('body')), 0, 'Custom function works as a definition');
 
 	var method2 = overload().args(o.any(Boolean, o.$)).use(a).expose();
