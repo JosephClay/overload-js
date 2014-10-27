@@ -425,7 +425,9 @@
 		}
 	};
 
-	if (typeof module !== 'undefined' && module.exports) {
+	if (typeof define === 'function') { // RequireJS
+        define(function() { return Overload; });
+    }  else if (typeof module !== 'undefined' && module.exports) { // CommonJS
         module.exports = Overload;
     } else {
 		root.Overload = Overload;
