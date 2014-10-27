@@ -324,7 +324,7 @@
 		// this._f;
 	};
 
-	Overload.O = O;
+	Overload.o = O;
 
 	Overload.defineType = function(name, check) {
 		var custom = new Custom(check);
@@ -431,7 +431,7 @@
         module.exports = Overload;
     } else {
 		root.overload = Overload;
-		root.o = Overload.O;
+		root.o = Overload.o;
     }
 
 }(window));
