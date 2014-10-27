@@ -1,4 +1,5 @@
 var gulp       = require('gulp'),
+    fs         = require('fs'),
     moment     = require('moment'),
     uglify     = require('gulp-uglify'),
     gzip       = require('gulp-gzip'),
@@ -47,8 +48,12 @@ gulp.task('zip', function() {
 });
 
 gulp.task('banner', function() {
+    var file = fs.readFileSync('./overload.min.js').toString();
+    file = file.replace(/^\/\*(.|\n)+\*\//, '');
+    fs.writeFileSync('./overload.min.js', file);
+
     var banner = [
-        '/*! ${title} - v${version} - ${date} %>\n',
+        '/*! ${title} - v${version} - ${date}\n',
         ' * ${homepage}\n',
         ' * Copyright (c) 2013-${year} ${author}; License: ${license} */\n'
     ].join('');
