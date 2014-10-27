@@ -1,28 +1,28 @@
 test('basics', function() {
-	ok(Overload, 'Overload exists');
-	ok(new Overload() instanceof Overload, 'Overload object created');
+	ok(overload, 'overload exists');
+	ok(overload() instanceof overload, 'overload object created');
 
-	ok(O, 'O exists');
-	ok(O.any, 'O.any exists');
-	ok(O.truthy, 'O.truthy exists');
-	ok(O.falsy, 'O.falsy exists');
+	ok(o, 'o exists');
+	ok(o.any, 'o.any exists');
+	ok(o.truthy, 'o.truthy exists');
+	ok(o.falsy, 'o.falsy exists');
 });
 
 test('method registration', function() {
 	var a = function() { return false; },
 		b = function() { return true; };
 
-	var o = new Overload();
+	var o = overload();
 	o.args().use(a);
 
 	ok(_.isFunction(o.expose()), 'Expose is a function');
 	strictEqual(o.expose()(), false, 'Method registered and called');
 	strictEqual(o.expose()(), false, 'Method returns return value');
-	strictEqual(o.expose()(), false, 'Overload can be used without arguments');
+	strictEqual(o.expose()(), false, 'overload can be used without arguments');
 });
 
 test('overload paths', function() {
-	var overload = new Overload();
+	var overload = overload();
 
 	overload.args(null).use(function() { return null; })
 			.args(undefined).use(function() { return undefined; })
@@ -41,62 +41,62 @@ test('overload paths', function() {
 	var method = overload.expose();
 
 	var types = [
-		{ 
+		{
 			type: null,
 			name: 'null',
 			param: null
 		},
-		{ 
+		{
 			type: undefined,
 			name: 'undefined',
 			param: undefined
 		},
-		{ 
+		{
 			type: Infinity,
 			name: 'Infinity',
 			param: Infinity
 		},
-		{ 
+		{
 			type: Date,
 			name: 'Date',
 			param: new Date()
 		},
-		{ 
+		{
 			type: Number,
 			name: 'Number',
 			param: 0
 		},
-		{ 
+		{
 			type: String,
 			name: 'String',
 			param: ''
 		},
-		{ 
+		{
 			type: Object,
 			name: 'Object',
 			param: {}
 		},
-		{ 
+		{
 			type: Array,
 			name: 'Array',
 			param: []
 		},
-		{ 
+		{
 			type: RegExp,
 			name: 'RegExp',
 			param: /-/gi
 		},
-		{ 
+		{
 			type: Boolean,
 			name: 'Boolean',
 			param: false
 		},
-		{ 
+		{
 			type: Function,
 			name: 'Function',
 			param: function() {}
 		},
-		{ 
+		{
 			type: Element,
 			name: 'Element',
 			param: document.getElementsByTagName('body')[0]
@@ -116,7 +116,7 @@ test('overload paths', function() {
 test('"this" context', function() {
 	var a = function() { return this; };
 
-	var o = new Overload();
+	var o = overload();
 	o.args().use(a);
 
 	var method = o.expose();
@@ -124,17 +124,17 @@ test('"this" context', function() {
 	equal(method.call('one'), 'one', 'Exposed method can be called with context');
 	equal(method.apply('two'), 'two', 'Exposed method can be applied with context');
 	equal(method.bind('three')(), 'three', 'Exposed method can be bound with context');
-	equal(o.call('four'), 'four', 'Overload can be called directly with context');
-	equal(o.apply('five'), 'five', 'Overload can be called applied with context');
-	equal(o.bind('six')(), 'six', 'Overload can be bound with context');
+	equal(o.call('four'), 'four', 'overload can be called directly with context');
+	equal(o.apply('five'), 'five', 'overload can be called applied with context');
+	equal(o.bind('six')(), 'six', 'overload can be bound with context');
 });
 
 test('truthy', function() {
 	var a = function() { return true; };
 
-	var o = new Overload();
+	var o = overload();
 	o.err = function() { return 'error'; };
-	o.args(O.truthy).use(a);
+	o.args(o.truthy).use(a);
 
 	var method = o.expose();
 
@@ -149,9 +149,9 @@ test('truthy', function() {
 test('falsy', function() {
 	var a = function() { return false; };
 
-	var o = new Overload();
+	var o = overload();
 	o.err = function() { return 'error'; };
-	o.args(O.falsy).use(a);
+	o.args(o.falsy).use(a);
 
 	var method = o.expose();
 
@@ -168,19 +168,19 @@ test('length', function() {
 		b = function() { return 2; },
 		c = function() { return 3; };
 
-	var o = new Overload();
+	var o = overload();
 	o.length(0).use(a);
 	o.length(1).use(b);
 	o.length(2).use(c);
-	
+
 	var method = o.expose();
 	strictEqual(method(), 1, 'No params called first function');
 	strictEqual(method(1), 2, 'One param called second function');
 	strictEqual(method(1, 2), 3, 'Two params called third function');
 
-	var ov = new Overload();
+	var ov = overload();
 	ov.length().use(function(a, b, c, d) { return 4; });
-	
+
 	var method2 = ov.expose();
 
 	strictEqual(method2(1, 2, 3, 4), 4, 'No length gets length from function');
@@ -190,10 +190,10 @@ test('any', function() {
 	var a = function() { return 0; },
 		b = function() { return 1; };
 
-	var o = new Overload();
+	var o = overload();
 	o.err = function() { return 'error'; };
-	o.args(O.any(String, Boolean, Date)).use(a);
-	o.args(O.any(Array, Object, Function)).use(b);
+	o.args(o.any(String, Boolean, Date)).use(a);
+	o.args(o.any(Array, Object, Function)).use(b);
 
 	var method = o.expose();
 
@@ -210,10 +210,10 @@ test('except', function() {
 	var a = function() { return 0; },
 		b = function() { return 1; };
 
-	var o = new Overload();
+	var o = overload();
 	o.err = function() { return 'error'; };
-	o.args(O.except(String, Boolean, Date)).use(a);
-	o.args(O.except(Array, Object, Function)).use(b);
+	o.args(o.except(String, Boolean, Date)).use(a);
+	o.args(o.except(Array, Object, Function)).use(b);
 
 	var method = o.expose();
 
@@ -230,7 +230,7 @@ test('except', function() {
 test('fallback', function() {
 	var a = function() { return 0; };
 
-	var o = new Overload();
+	var o = overload();
 	o.args(String, Boolean, Date).use(function() {});
 	o.fallback(a);
 
@@ -242,7 +242,7 @@ test('fallback', function() {
 test('passed parameters', function() {
 	var a = function(param) { return param; };
 	var b = function() { return 'fallback'; };
-	var method = Overload().args(O.any(String, Number, Boolean)).use(a).fallback(b).expose();
+	var method = overload().args(o.any(String, Number, Boolean)).use(a).fallback(b).expose();
 
 	equal(method('one'), 'one', 'String passed and returned');
 	equal(method(2), 2, 'Number passed and returned');
@@ -251,20 +251,20 @@ test('passed parameters', function() {
 });
 
 test('custom', function() {
-	Overload.defineType('$', function(val) {
+	overload.defineType('$', function(val) {
 		return (val instanceof jQuery);
 	});
 
-	ok(O.$, 'Custom type added');
+	ok(o.$, 'Custom type added');
 
 	var a = function() { return 0; };
 
-	var o = new Overload();
-	o.args(O.$).use(a);
-	
+	var o = overload();
+	o.args(o.$).use(a);
+
 	var method1 = o.expose();
 	strictEqual(method1($('body')), 0, 'Custom function works as a definition');
-	
-	var method2 = new Overload().args(O.any(Boolean, O.$)).use(a).expose();
+
+	var method2 = overload().args(o.any(Boolean, o.$)).use(a).expose();
 	strictEqual(method2($('body')), 0, 'Custom function work inside any() custom definition');
 });
