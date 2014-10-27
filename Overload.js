@@ -430,8 +430,8 @@
     }  else if (typeof module !== 'undefined' && module.exports) { // CommonJS
         module.exports = Overload;
     } else {
-		root.Overload = Overload;
-		root.O = Overload.O;
+		root.overload = Overload;
+		root.o = Overload.O;
     }
 
 }(window));
