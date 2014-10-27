@@ -1,13 +1,14 @@
 {
   "name": "overload-js",
   "title": "overload-js",
-  "main": "Overload.js",
+  "main": "overload.js",
   "description": "Method overloading in JavaScript",
   "version": "0.1.0",
   "homepage": "https://github.com/JosephClay/overload-js",
+  "license": "MIT",
   "author": {
     "name": "Joe Clay",
-    "email": "testingriven@gmail.com"
+    "email": "j053phclay@gmail.com"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,6 @@
     "gulp-rename": "^1.2.0",
     "gulp-uglify": "^1.0.1",
     "moment": "^2.8.3"
-  }
+  },
+  "dependencies": {}
 }
