@@ -34,14 +34,14 @@ var gulp       = require('gulp'),
     };
 
 gulp.task('min', function() {
-    gulp.src('signal.js')
+    gulp.src('overload.js')
         .pipe(uglify(UGLIFY_OPTS))
-        .pipe(rename('signal.min.js'))
+        .pipe(rename('overload.min.js'))
         .pipe(gulp.dest('./'));
 });
 
 gulp.task('zip', function() {
-    gulp.src('signal.min.js')
+    gulp.src('overload.min.js')
         .pipe(gzip({ append: true }))
         .pipe(gulp.dest('./'));
 });
@@ -53,7 +53,7 @@ gulp.task('banner', function() {
         ' * Copyright (c) 2013-${year} ${author}; License: ${license} */\n'
     ].join('');
 
-    gulp.src('signal.min.js')
+    gulp.src('overload.min.js')
         .pipe(header(banner, {
             title:    pkg.title || pkg.name,
             version:  pkg.version,
@@ -67,34 +67,10 @@ gulp.task('banner', function() {
 
 });
 
-
 gulp.task('default', function() {
     gulp.start([
         'min',
         'zip',
         'banner'
     ]);
-});
-
-gulp.task('test', function() {
-    var path = require('path'),
-        nodeunit = require('nodeunit').reporters.default,
-        dir = require('node-dir');
-
-    var normalizeFilePaths = function(files) {
-        return files.map(function(file) {
-            var normalPath = path.normalize(path.relative(__dirname, file)),
-                properPath = normalPath.split(path.sep).join('/'),
-                relativePath = './' + properPath;
-            return relativePath;
-        });
-    };
-
-    dir.files('./test', function(err, files) {
-        if (err) { throw err; }
-
-        files = normalizeFilePaths(files);
-        nodeunit.run(files);
-    });
-
 });
