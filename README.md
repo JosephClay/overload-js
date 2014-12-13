@@ -3,9 +3,11 @@ overload-js
 
 Function overloading for JavaScript for 3.5KB minified, 1.4KB gzipped.
 
-Provides tools to mimic [function overloading][1] that is present in most strictly-types languages. Prevents messy, long, if-statement, type-checking functions that are hard to read and maintain.
+Provides tools to mimic [function overloading][1] that is present in most strictly-types languages. Prevents messy, long, if-statement, type-checking functions that are hard to read and maintain. Style and API inspired by [Moreiki][2] and [Mongoose][3].
 
 [1]: <https://en.wikipedia.org/wiki/Function_overloading>
+[2]: <https://github.com/Moeriki/overload-js>
+[3]: <http://mongoosejs.com/>
 
 `npm install overload-js`
 
