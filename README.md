@@ -20,13 +20,13 @@ var hello = (function() {
 
 	var secret = '!';
 
-	return overload().args().use(function() {
+	return overload()
+			.args().use(function() {
 				return secret;
 			})
 			.args(String).use(function(val) {
 				secret = val;
-			})
-			.expose();
+			});
 
 }());
 
@@ -34,8 +34,10 @@ hello('world'); // calls setter
 hello(); // returns 'world'
 hello(0); // throws a Type Error
 ```
+
 Detectable types
 ----------------
+
 ```javascript
 null
 undefined
@@ -49,7 +51,35 @@ Array
 RegExp
 Boolean
 Function
-Element
+Element // browser only
+```
+
+Overload with a map
+----------------
+
+A map can be defined as an overload as well:
+
+```javascript
+var hello = overload.map({
+		what: String
+	}).use(function(obj) {
+		return 'hello ' + obj.what;
+	});
+
+hello({ what: 'world!' }); // returns 'hello world!'
+hello('world'); // throws a Type Error
+```
+
+or a map can be used as a custom type (see below):
+```javascript
+var hello = overload.args(String, o.map({
+		what: String
+	})).use(function(str, obj) {
+		return str + obj.what;
+	});
+
+hello('hello', { what: 'world!' }); // returns 'hello world!'
+hello('hello', 'world'); // throws a Type Error
 ```
 
 Custom types
@@ -72,7 +102,7 @@ var overload = require('overload-js'),
 	o = overload.o;
 var method = overload().args(o.$).use(function($elem) {
 	console.log($elem);
-}).expose();
+});
 
 method(); // fails
 method(''); // fails
@@ -87,7 +117,7 @@ Additional types
 ```javascript
 var method = overload().args(o.any(String, Number)).use(function() {
 	console.log('passed!');
-}).expose();
+});
 
 method(); // fails
 method([]); // fails
@@ -100,7 +130,7 @@ The inverse of `o.any` is `o.except`.
 ```javascript
 var method = overload().args(o.except(Object)).use(function() {
 	console.log('passed!');
-}).expose();
+});
 
 method(); // passed!
 method([]); // passed!
@@ -110,23 +140,20 @@ method({}); // fails
 Also available are `o.truthy` and `o.falsy`.
 
 ```javascript
-var overload = overload();
-
-overload.args(o.truthy).use(function() {
-	console.log('truthy');
-});
-overload.args(o.falsy).use(function() {
-	console.log('falsy');
-});
-
-var method = overload.expose();
+var method = overload()
+	.args(o.truthy).use(function() {
+		console.log('truthy');
+	})
+	.args(o.falsy).use(function() {
+		console.log('falsy');
+	});
 
 method(); // fails
 method(0); // falsy
 method(1); // truthy
 ```
 
-overloading by length
+Overloading by length
 ----------------
 
 In addition to overloading by type, argument length can be used.
@@ -134,21 +161,22 @@ If a number is not passed, the `function.length` will be used.
 
 ```javascript
 var method = overload()
-		.length(0).use(function() {
+		.len(0).use(function() {
 			console.log('0 args');
 		})
-		.length(1).use(function(a) {
+		.len(1).use(function(a) {
 			console.log('1 arg');
 		})
-		.length().use(function(a, b, c) {
+		.len().use(function(a, b, c) {
 			console.log('3 args');
-		})
-		.expose();
+		});
 
 method(); // '0 args'
 method({}); // '1 arg'
 method(null, [], {}); // '3 args'
 ```
+
+alias: `count`, `size`
 
 If `args` and `length` are used in the overload, args will be matched
 first, followed by length.
@@ -164,8 +192,7 @@ var method = overload().args(String).use(function(a) {
 			})
 			.fallback(function() {
 				console.log('handled!');
-			})
-			.expose();
+			});
 method('hello'); // 'hello'
 method(); // 'handled'
 ```
@@ -173,21 +200,43 @@ method(); // 'handled'
 If a fallback is not defined and the exposed method is called
 without a matching function, an error will be thrown...
 
+Expose
+----------------
+
+A clean function can optionally be used to exposed so that overload properties
+and methods are hidden from the outside world. 
+
+```javascript
+var method = overload()
+	.args().use(function() {
+		return 'hi';
+	})
+	.expose();
+
+// method.args === undefined
+// method.use === undefined
+// etc...
+```
+
 Errors
 ----------------
 
-The error from unmatched calls can be handled by defining your own `err` method on `overload`.
+The error from unmatched calls can be handled by defining your own `err` method on `overload` or
+by passing a function to handle the error.
 
 ```javascript
-overload.prototype.err = function() {
+overload.err = function() {
 	console.log('there was an error');
 };
+
+overload()
+	.error(function() { console.trace(); })
 ```
 
 Support
 ----------------
 
-Modern browsers and IE8+
+node, modern browsers and IE8+
 
 It may work in older (IE7 and lower) browser, but no guarantees, it hasn't been tested in older browsers.
 
