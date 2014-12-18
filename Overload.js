@@ -127,7 +127,7 @@
 		};
 
 	var _getConfigurationType = function(val) {
-		if (val === NULL) { return _types[sNull]; }
+		if (val === null) { return _types[sNull]; }
 		if (val === undefined) { return _types[sUndefined]; }
 
 		// we have something, but don't know what
@@ -141,7 +141,7 @@
 	};
 
 	var _getParameterType = function(val) {
-		if (val === NULL) { return _types[sNull]; }
+		if (val === null) { return _types[sNull]; }
 		if (val === undefined) { return _types[sUndefined]; }
 		if (val === TRUE || val === FALSE) { return _types[sBoolean]; }
 		if (val && val.nodeType === 1) { return _types[sElement]; } // Element check from Underscore
@@ -326,16 +326,16 @@
 		/**
 		 * Methods mapped to argument types
 		 * Lazily instanciated
-		 * @type {Array}
+		 * @type {Array} argument mapping
 		 */
-		// this._argMaps;
+		// this._m;
 
 		/**
 		 * Methods mapped to argument lengths
 		 * Lazily instanciated
-		 * @type {Array}
+		 * @type {Array} length mapping
 		 */
-		// this._lenMaps;
+		// this._l;
 
 		/**
 		 * A fallback function if none
@@ -349,7 +349,7 @@
 
 			return {
 				use: function(method) {
-					var argMappings = self._argMaps || (self._argMaps = []);
+					var argMappings = self._m || (self._m = []);
 					argMappings.push({
 						params: [o.map(map)],
 						method: method
@@ -365,7 +365,7 @@
 
 			return {
 				use: function(method) {
-					var argMappings = self._argMaps || (self._argMaps = []);
+					var argMappings = self._m || (self._m = []);
 					argMappings.push({
 						params: _convertConfigurationTypes(args),
 						method: method
@@ -379,7 +379,7 @@
 			var self = this;
 			return {
 				use: function(method) {
-					var lengthMappings = self._lenMaps || (self._lenMaps = []);
+					var lengthMappings = self._l || (self._l = []);
 					lengthMappings.push({
 						length: (num === undefined) ? method.length : num,
 						method: method
@@ -432,13 +432,13 @@
 
 			// Any argument match, of course, already matches
 			// the length match, so this should be done first
-			var argMatch = _getArgumentMatch(this._argMaps, args);
+			var argMatch = _getArgumentMatch(this._m, args);
 			if (argMatch) {
 				return argMatch.method.apply(context, args);
 			}
 
 			// Check for a length match
-			var lengthMatch = _getLengthMatch(this._lenMaps, args);
+			var lengthMatch = _getLengthMatch(this._l, args);
 			if (lengthMatch) {
 				return lengthMatch.method.apply(context, args);
 			}
