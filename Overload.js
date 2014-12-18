@@ -84,18 +84,18 @@
 					// Items not in this list are doing faster
 					// (non-string) checks
 					//
-					// k = key, v = value
-					{ k: sDate,     v: _types[sDate]     },
-					{ k: sNumber,   v: _types[sNumber]   },
-					{ k: sString,   v: _types[sString]   },
-					{ k: sObject,   v: _types[sObject]   },
-					{ k: sArray,    v: _types[sArray]    },
-					{ k: sRegExp,   v: _types[sRegExp]   },
-					{ k: sFunction, v: _types[sFunction] }
+					// 0 = key, 1 = value
+					[ sDate,     _types[sDate]     ],
+					[ sNumber,   _types[sNumber]   ],
+					[ sString,   _types[sString]   ],
+					[ sObject,   _types[sObject]   ],
+					[ sArray,    _types[sArray]    ],
+					[ sRegExp,   _types[sRegExp]   ],
+					[ sFunction, _types[sFunction] ]
 				],
 				idx = types.length;
 			while (idx--) {
-				map['[object ' + types[idx].k + ']'] = types[idx].v;
+				map['[object ' + types[idx][0] + ']'] = types[idx][1];
 			}
 
 			return map;
@@ -467,7 +467,6 @@
 		};
 		return extend(overload, fn);
 	};
-	
 	api.o = o;
 	api.fn = fn;
 	api.define = api.defineType = function(name, check) {
