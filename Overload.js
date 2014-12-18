@@ -469,7 +469,7 @@
 	};
 	
 	api.o = o;
-
+	api.fn = fn;
 	api.define = api.defineType = function(name, check) {
 		var custom = new Custom(check);
 		return (o[name] = custom);
