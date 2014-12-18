@@ -7,7 +7,7 @@
   "homepage": "https://github.com/JosephClay/overload-js",
   "license": "MIT",
   "scripts": {
-    "test": "nodeunit ./test/node.js"
+    "test": "npm install && nodeunit ./test/node.js"
   },
   "author": {
     "name": "Joe Clay",
