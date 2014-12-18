@@ -1,6 +1,7 @@
 test('basics', function() {
 	ok(overload, 'overload exists');
-	ok(overload() instanceof overload, 'overload object created');
+	ok(overload(), 'overload object created');
+	ok(typeof overload() === 'function', 'overload object is a function');
 
 	ok(o, 'o exists');
 	ok(o.any, 'o.any exists');
@@ -16,29 +17,26 @@ test('method registration', function() {
 	o.args().use(a);
 
 	ok(_.isFunction(o.expose()), 'Expose is a function');
-	strictEqual(o.expose()(), false, 'Method registered and called');
-	strictEqual(o.expose()(), false, 'Method returns return value');
-	strictEqual(o.expose()(), false, 'overload can be used without arguments');
+	strictEqual(o(), false, 'Method registered and called');
+	strictEqual(o(), false, 'Method returns return value');
+	strictEqual(o(), false, 'overload can be used without arguments');
 });
 
 test('overload paths', function() {
-	var ov = overload();
-
-	ov.args(null).use(function() { return null; })
-			.args(undefined).use(function() { return undefined; })
-			.args(Infinity).use(function() { return Infinity; })
-			.args(Date).use(function() { return Date; })
-			.args(NaN).use(function() { return NaN; })
-			.args(Number).use(function() { return Number; })
-			.args(String).use(function() { return String; })
-			.args(Object).use(function() { return Object; })
-			.args(Array).use(function() { return Array; })
-			.args(RegExp).use(function() { return RegExp; })
-			.args(Boolean).use(function() { return Boolean; })
-			.args(Function).use(function() { return Function; })
-			.args(Element).use(function() { return Element; });
-
-	var method = ov.expose();
+	var method = overload()
+		.args(null).use(function() { return null; })
+		.args(undefined).use(function() { return undefined; })
+		.args(Infinity).use(function() { return Infinity; })
+		.args(Date).use(function() { return Date; })
+		.args(NaN).use(function() { return NaN; })
+		.args(Number).use(function() { return Number; })
+		.args(String).use(function() { return String; })
+		.args(Object).use(function() { return Object; })
+		.args(Array).use(function() { return Array; })
+		.args(RegExp).use(function() { return RegExp; })
+		.args(Boolean).use(function() { return Boolean; })
+		.args(Function).use(function() { return Function; })
+		.args(Element).use(function() { return Element; });
 
 	var types = [
 		{
@@ -114,29 +112,19 @@ test('overload paths', function() {
 });
 
 test('"this" context', function() {
-	var a = function() { return this; };
-
-	var o = overload();
-	o.args().use(a);
-
-	var method = o.expose();
+	var method = overload()
+		.args()
+		.use(function() { return this; });
 
 	equal(method.call('one'), 'one', 'Exposed method can be called with context');
 	equal(method.apply('two'), 'two', 'Exposed method can be applied with context');
 	equal(method.bind('three')(), 'three', 'Exposed method can be bound with context');
-	equal(o.call('four'), 'four', 'overload can be called directly with context');
-	equal(o.apply('five'), 'five', 'overload can be called applied with context');
-	equal(o.bind('six')(), 'six', 'overload can be bound with context');
 });
 
 test('wild', function() {
-	var a = function() { return true; };
-
-	var ov = overload();
-	ov.err = function() { return 'error'; };
-	ov.args(o.wild).use(a);
-
-	var method = ov.expose();
+	var method = overload()
+		.error(function() { return 'error'; })
+		.args(o.wild).use(function() { return true; });
 
 	strictEqual(method(1), true, 'wild works with #1');
 	strictEqual(method(0), true, 'wild works with #0');
@@ -151,13 +139,9 @@ test('wild', function() {
 });
 
 test('truthy', function() {
-	var a = function() { return true; };
-
-	var ov = overload();
-	ov.err = function() { return 'error'; };
-	ov.args(o.truthy).use(a);
-
-	var method = ov.expose();
+	var method = overload()
+		.error(function() { return 'error'; })
+		.args(o.truthy).use(function() { return true; });
 
 	strictEqual(method(1), true, 'truthy works with #1');
 	strictEqual(method(true), true, 'truthy works with true');
@@ -168,13 +152,9 @@ test('truthy', function() {
 });
 
 test('falsy', function() {
-	var a = function() { return false; };
-
-	var ov = overload();
-	ov.err = function() { return 'error'; };
-	ov.args(o.falsy).use(a);
-
-	var method = ov.expose();
+	var method = overload()
+		.error(function() { return 'error'; })
+		.args(o.falsy).use(function() { return false; });
 
 	strictEqual(method(0), false, 'falsy works with #0');
 	strictEqual(method(false), false, 'falsy works with false');
@@ -190,9 +170,9 @@ test('length', function() {
 		c = function() { return 3; };
 
 	var o = overload();
-	o.length(0).use(a);
-	o.length(1).use(b);
-	o.length(2).use(c);
+	o.len(0).use(a);
+	o.len(1).use(b);
+	o.len(2).use(c);
 
 	var method = o.expose();
 	strictEqual(method(), 1, 'No params called first function');
@@ -200,7 +180,7 @@ test('length', function() {
 	strictEqual(method(1, 2), 3, 'Two params called third function');
 
 	var ov = overload();
-	ov.length().use(function(a, b, c, d) { return 4; });
+	ov.len().use(function(a, b, c, d) { return 4; });
 
 	var method2 = ov.expose();
 
@@ -208,15 +188,10 @@ test('length', function() {
 });
 
 test('any', function() {
-	var a = function() { return 0; },
-		b = function() { return 1; };
-
-	var ov = overload();
-	ov.err = function() { return 'error'; };
-	ov.args(o.any(String, Boolean, Date)).use(a);
-	ov.args(o.any(Array, Object, Function)).use(b);
-
-	var method = ov.expose();
+	var method = overload()
+		.error(function() { return 'error'; })
+		.args(o.any(String, Boolean, Date)).use(function() { return 0; })
+		.args(o.any(Array, Object, Function)).use(function() { return 1; });
 
 	strictEqual(method(''), 0, 'Any first test passed');
 	strictEqual(method(true), 0, 'Any first test passed');
@@ -228,15 +203,10 @@ test('any', function() {
 });
 
 test('except', function() {
-	var a = function() { return 0; },
-		b = function() { return 1; };
-
-	var ov = overload();
-	ov.err = function() { return 'error'; };
-	ov.args(o.except(String, Boolean, Date)).use(a);
-	ov.args(o.except(Array, Object, Function)).use(b);
-
-	var method = ov.expose();
+	var method = overload()
+		.error(function() { return 'error'; })
+		.args(o.except(String, Boolean, Date)).use(function() { return 0; })
+		.args(o.except(Array, Object, Function)).use(function() { return 1; });
 
 	strictEqual(method(''), 1, 'Expect first test passed');
 	strictEqual(method(true), 1, 'Expect first test passed');
@@ -250,11 +220,9 @@ test('except', function() {
 test('map', function() {
 	var a = function() { return true; };
 
-	var ov = overload();
-	ov.err = function() { return 'error'; };
-	ov.args(o.map({ foo: String, bar: Boolean, baz: Date })).use(a);
-
-	var method = ov.expose();
+	var method = overload()
+		.error(function() { return 'error'; })
+		.args(o.map({ foo: String, bar: Boolean, baz: Date })).use(a);
 
 	strictEqual(method(''), 'error', 'Expect error');
 	strictEqual(method(true), 'error', 'Expect error');
@@ -268,19 +236,16 @@ test('map', function() {
 	strictEqual(method({ foo: '', bar: false, baz: new Date(), foo2: '' }), true, 'Expect pass - extra data ignored');
 
 	// reset for undefined key test
-	ov = overload();
-	ov.err = function() { return 'error'; };
-	ov.args(o.map({ foo: undefined, bar: Boolean })).use(a);
+	method = overload()
+		.error(function() { return 'error'; })
+		.args(o.map({ foo: undefined, bar: Boolean })).use(a);
 
-	method = ov.expose();
 	strictEqual(method({ bar: false }), true, 'Expect pass - missing key that should be undefined is ignored');
 
 	// reset for convenience method
-	ov = overload();
-	ov.err = function() { return 'error'; };
-	ov.map({ foo: String, bar: Boolean, baz: Date }).use(a);
-
-	method = ov.expose();
+	method = overload()
+		.error(function() { return 'error'; })
+		.map({ foo: String, bar: Boolean, baz: Date }).use(a);
 
 	strictEqual(method(''), 'error', 'Expect error');
 	strictEqual(method(true), 'error', 'Expect error');
@@ -295,21 +260,38 @@ test('map', function() {
 });
 
 test('fallback', function() {
-	var a = function() { return 0; };
-
-	var o = overload();
-	o.args(String, Boolean, Date).use(function() {});
-	o.fallback(a);
-
-	var method = o.expose();
+	var method = overload()
+		.args(String).use(function() {})
+		.fallback(function() { return 0; });
 
 	strictEqual(method(), 0, 'Fallback function called');
 });
 
+test('error', function() {
+	var method = overload()
+		.args(String).use(function() { return 0; })
+		.error(function() { return 'error'; });
+
+	strictEqual(!!method, true, '.error successfully chains');
+	strictEqual(method(''), 0, '.error chained succeeds');
+	strictEqual(method(), 'error', '.error chained fails');
+});
+
+test('expose', function() {
+	var method = overload()
+		.args(String).use(function() { return 0; })
+		.error(function() { return 'error'; })
+		.expose();
+
+	strictEqual(method(''), 0, 'Exposed function suceeds');
+	strictEqual(method(), 'error', 'Exposed function fails');
+	strictEqual(_.size(method), 0, 'Exposed function is clean');
+});
+
 test('passed parameters', function() {
-	var a = function(param) { return param; };
-	var b = function() { return 'fallback'; };
-	var method = overload().args(o.any(String, Number, Boolean)).use(a).fallback(b).expose();
+	var method = overload()
+		.args(o.any(String, Number, Boolean)).use(function(param) { return param; })
+		.fallback(function() { return 'fallback'; });
 
 	equal(method('one'), 'one', 'String passed and returned');
 	equal(method(2), 2, 'Number passed and returned');
@@ -326,12 +308,9 @@ test('custom', function() {
 
 	var a = function() { return 0; };
 
-	var ov = overload();
-	ov.args(o.$).use(a);
-
-	var method1 = ov.expose();
+	var method1 = overload().args(o.$).use(a);
 	strictEqual(method1($('body')), 0, 'Custom function works as a definition');
 
-	var method2 = overload().args(o.any(Boolean, o.$)).use(a).expose();
+	var method2 = overload().args(o.any(Boolean, o.$)).use(a);
 	strictEqual(method2($('body')), 0, 'Custom function work inside any() custom definition');
 });

@@ -111,7 +111,21 @@
 			return function(arraylike) {
 				return slice.call(arraylike);
 			};
-		}([].slice));
+		}([].slice)),
+
+		/**
+		 * Mini extend
+		 * @param  {Function} base
+		 * @param  {Object}   obj
+		 * @return {Function} base
+		 */
+		extend = function(base, obj) {
+			var key;
+			for (key in obj) {
+				base[key] = obj[key];
+			}
+			return base;
+		};
 
 	var _getConfigurationType = function(val) {
 		if (val === null) { return _types[sNull]; }
@@ -283,7 +297,7 @@
 		this.check = check;
 	};
 
-	var O = {
+	var o = {
 		wild: new Custom(function() {
 			return true;
 		}),
@@ -313,12 +327,7 @@
 		}
 	};
 
-	/**
-	 * @constructor
-	 */
-	var Overload = function() {
-		if (!(this instanceof Overload)) { return new Overload(); }
-
+	var fn = {
 		/**
 		 * Methods mapped to argument types
 		 * Lazily instanciated
@@ -339,19 +348,6 @@
 		 * @type {Function}
 		 */
 		// this._f;
-	};
-
-	Overload.o = O;
-
-	Overload.define = Overload.defineType = function(name, check) {
-		var custom = new Custom(check);
-		return (O[name] = custom);
-	};
-
-	Overload.prototype = {
-
-		/** @constructor */
-		constructor: Overload,
 
 		map: function(map) {
 			var self = this;
@@ -360,7 +356,7 @@
 				use: function(method) {
 					var argMappings = self._argMaps || (self._argMaps = []);
 					argMappings.push({
-						params: [O.map(map)],
+						params: [o.map(map)],
 						method: method
 					});
 					return self;
@@ -384,7 +380,7 @@
 			};
 		},
 
-		length: function(num) {
+		len: function(num) {
 			var self = this;
 			return {
 				use: function(method) {
@@ -398,8 +394,8 @@
 			};
 		},
 
-		error: function(fn) {
-			this.err = fn;
+		error: function(method) {
+			this.err = method;
 			return this;
 		},
 
@@ -462,13 +458,30 @@
 		}
 	};
 
+	fn.fail = fn.error;
+	fn.count = fn.size = fn.len;
+
+	var api = function() {
+		var overload = function overload() {
+			return overload._call(overload, arguments);
+		};
+		return extend(overload, fn);
+	};
+	
+	api.o = o;
+
+	api.define = api.defineType = function(name, check) {
+		var custom = new Custom(check);
+		return (o[name] = custom);
+	};
+
 	if (typeof define === 'function') { // RequireJS
-        define(function() { return Overload; });
+        define(function() { return api; });
     }  else if (typeof module !== 'undefined' && module.exports) { // CommonJS
-        module.exports = Overload;
+        module.exports = api;
     } else {
-		root.overload = Overload;
-		root.o = Overload.o;
+		root.overload = api;
+		root.o = o;
     }
 
 }(window));
