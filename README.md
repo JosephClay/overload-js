@@ -240,6 +240,8 @@ node, modern browsers and IE8+
 
 It may work in older (IE7 and lower) browser, but no guarantees, it hasn't been tested in older browsers.
 
+To run the tests, simply open test/index.html in your favorite browser or run `npm test`.
+
 #License
 ----------------
 
