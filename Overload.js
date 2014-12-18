@@ -394,10 +394,6 @@
 			return this;
 		},
 
-		_err: function() {
-			throw 'overload - exception: No methods matched';
-		},
-
 		fallback: function(method) {
 			this._f = method;
 			return this;
@@ -449,7 +445,7 @@
 			}
 
 			// Error
-			return this._err(args);
+			return this._err ? this._err(args) : api.err;
 		}
 	};
 
@@ -464,6 +460,9 @@
 	};
 	api.o = o;
 	api.fn = fn;
+	api.err = function() {
+		throw 'overload - exception: No methods matched';
+	};
 	api.define = api.defineType = function(name, check) {
 		var custom = new Custom(check);
 		return (o[name] = custom);
