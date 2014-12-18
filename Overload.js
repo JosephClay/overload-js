@@ -400,7 +400,7 @@
 		},
 
 		_err: function() {
-			throw 'Overload - exception: No methods matched';
+			throw 'overload - exception: No methods matched';
 		},
 
 		fallback: function(method) {
