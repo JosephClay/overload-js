@@ -395,11 +395,11 @@
 		},
 
 		error: function(method) {
-			this.err = method;
+			this._err = method;
 			return this;
 		},
 
-		err: function() {
+		_err: function() {
 			throw 'Overload - exception: No methods matched';
 		},
 
@@ -454,7 +454,7 @@
 			}
 
 			// Error
-			return this.err(args);
+			return this._err(args);
 		}
 	};
 
