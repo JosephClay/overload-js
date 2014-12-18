@@ -343,7 +343,7 @@
 
 	Overload.o = O;
 
-	Overload.defineType = function(name, check) {
+	Overload.define = Overload.defineType = function(name, check) {
 		var custom = new Custom(check);
 		return (O[name] = custom);
 	};
