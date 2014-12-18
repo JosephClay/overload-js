@@ -300,17 +300,18 @@ test('passed parameters', function() {
 });
 
 test('custom', function() {
-	overload.defineType('$', function(val) {
-		return (val instanceof jQuery);
+	var Thingy = function() {};
+	overload.defineType('thingy', function(val) {
+		return (val instanceof Thingy);
 	});
 
-	ok(o.$, 'Custom type added');
+	ok(o.thingy, 'Custom type added');
 
 	var a = function() { return 0; };
 
-	var method1 = overload().args(o.$).use(a);
-	strictEqual(method1($('body')), 0, 'Custom function works as a definition');
+	var method1 = overload().args(o.thingy).use(a);
+	strictEqual(method1(new Thingy()), 0, 'Custom function works as a definition');
 
-	var method2 = overload().args(o.any(Boolean, o.$)).use(a);
-	strictEqual(method2($('body')), 0, 'Custom function work inside any() custom definition');
+	var method2 = overload().args(o.any(Boolean, o.thingy)).use(a);
+	strictEqual(method2(new Thingy()), 0, 'Custom function work inside any() custom definition');
 });

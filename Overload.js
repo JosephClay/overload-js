@@ -1,4 +1,6 @@
-(function(root, TRUE, FALSE, NULL, undefined) {
+(function(TRUE, FALSE, NULL, undefined) {
+
+	var root = typeof window !== 'undefined' ? window : this;
 
 	// Variablizing the strings for consistency
 	// and to avoid harmful dot-notation look-ups with
@@ -36,8 +38,10 @@
 			globalObject;
 		while (idx--) {
 			globalObject = globalObjects[idx];
-			if (!root[globalObject].name) {
-				root[globalObject].name = globalObject;
+			if (root[globalObject] !== undefined) {
+				if (!root[globalObject].name) {
+					root[globalObject].name = globalObject;
+				}
 			}
 		}
 	}());
@@ -477,4 +481,4 @@
 		root.o = o;
     }
 
-}(window, true, false, null));
+}(true, false, null));
