@@ -238,13 +238,42 @@ test('except', function() {
 
 	var method = ov.expose();
 
-	strictEqual(method(''), 1, 'Except first test passed');
-	strictEqual(method(true), 1, 'Except first test passed');
-	strictEqual(method(new Date()), 1, 'Except first test passed');
+	strictEqual(method(''), 1, 'Expect first test passed');
+	strictEqual(method(true), 1, 'Expect first test passed');
+	strictEqual(method(new Date()), 1, 'Expect first test passed');
 
-	strictEqual(method([]), 0, 'Except second test passed');
-	strictEqual(method({}), 0, 'Except second test passed');
-	strictEqual(method(function() {}), 0, 'Except second test passed');
+	strictEqual(method([]), 0, 'Expect second test passed');
+	strictEqual(method({}), 0, 'Expect second test passed');
+	strictEqual(method(function() {}), 0, 'Expect second test passed');
+});
+
+test('map', function() {
+	var a = function() { return true; };
+
+	var ov = overload();
+	ov.err = function() { return 'error'; };
+	ov.args(o.map({ foo: String, bar: Boolean, baz: Date })).use(a);
+
+	var method = ov.expose();
+
+	strictEqual(method(''), 'error', 'Expect error');
+	strictEqual(method(true), 'error', 'Expect error');
+	strictEqual(method(new Date()), 'error', 'Expect error');
+	
+	strictEqual(method({ foo: '', bar: false }), 'error', 'Expect error - missing bar');
+	strictEqual(method({ foo: '', baz: new Date() }), 'error', 'Expect error - missing baz');
+	strictEqual(method({ bar: false, baz: new Date() }), 'error', 'Expect error - missing foo');
+	
+	strictEqual(method({ foo: '', bar: false, baz: new Date() }), true, 'Expect pass - fulfilled requirements');
+	strictEqual(method({ foo: '', bar: false, baz: new Date(), foo2: '' }), true, 'Expect pass - extra data ignored');
+
+	// reset for undefined key test
+	ov = overload();
+	ov.err = function() { return 'error'; };
+	ov.args(o.map({ foo: undefined, bar: Boolean })).use(a);
+
+	method = ov.expose();
+	strictEqual(method({ bar: false }), true, 'Expect pass - missing key that should be undefined is ignored');
 });
 
 test('fallback', function() {

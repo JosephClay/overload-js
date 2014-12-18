@@ -156,6 +156,16 @@
 		return parameters;
 	};
 
+	var _convertConfigurationMap = function(map) {
+		var parameters = {},
+			key, configItem;
+		for (key in map) {
+			configItem = map[key];
+			parameters[key] = (configItem instanceof Custom) ? configItem : _getConfigurationType(configItem);
+		}
+		return parameters;
+	};
+
 	var _convertParametersTypes = function(args) {
 		var parameters = [],
 			idx = 0, length = args.length;
@@ -180,9 +190,8 @@
 			if (mapItem instanceof Custom) {
 				if (mapItem.check(args[idx])) {
 					continue;
-				} else {
-					return false;
 				}
+				return false;
 			}
 
 			if (argTypes[idx] !== mapItem) {
@@ -232,9 +241,8 @@
 			if (mapItem instanceof Custom) {
 				if (mapItem.check(val)) {
 					return true;
-				} else {
-					continue;
 				}
+				continue;
 			}
 
 			if (args[idx] === type) {
@@ -243,6 +251,27 @@
 		}
 
 		return false;
+	};
+
+	var _matchMap = function(config, map) {
+		var key, configItem, mapItem;
+		for (key in config) {
+			configItem = config[key];
+			mapItem = map[key];
+
+			if (configItem instanceof Custom) {
+				if (!configItem.check(mapItem)) {
+					return false;
+				}
+				continue;
+			}
+
+			if (configItem !== _getParameterType(mapItem)) {
+				return false;
+			}
+		}
+
+		return true;
 	};
 
 	/**
@@ -275,6 +304,12 @@
 			return new Custom(function(val) {
 				return !_matchAny(args, val);
 			});
+		},
+		map: function(map) {
+			var mapConfig = _convertConfigurationMap(map);
+			return new Custom(function(map) {
+				return _matchMap(mapConfig, map);
+			});	
 		}
 	};
 
