@@ -129,6 +129,27 @@ test('"this" context', function() {
 	equal(o.bind('six')(), 'six', 'overload can be bound with context');
 });
 
+test('wild', function() {
+	var a = function() { return true; };
+
+	var ov = overload();
+	ov.err = function() { return 'error'; };
+	ov.args(o.wild).use(a);
+
+	var method = ov.expose();
+
+	strictEqual(method(1), true, 'wild works with #1');
+	strictEqual(method(0), true, 'wild works with #0');
+	strictEqual(method(true), true, 'wild works with true');
+	strictEqual(method(false), true, 'wild works with false');
+	strictEqual(method('1'), true, 'wild works with "1"');
+	strictEqual(method({}), true, 'wild works with Object');
+	strictEqual(method([]), true, 'wild works with Array');
+	strictEqual(method(undefined), true, 'wild works with undefined');
+	strictEqual(method(null), true, 'wild works with null');
+	strictEqual(method(), 'error', 'wild throws error with no param');
+});
+
 test('truthy', function() {
 	var a = function() { return true; };
 
@@ -225,7 +246,6 @@ test('except', function() {
 	strictEqual(method({}), 0, 'Except second test passed');
 	strictEqual(method(function() {}), 0, 'Except second test passed');
 });
-
 
 test('fallback', function() {
 	var a = function() { return 0; };
