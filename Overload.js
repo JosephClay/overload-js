@@ -398,6 +398,11 @@
 			};
 		},
 
+		error: function(fn) {
+			this.err = fn;
+			return this;
+		},
+
 		err: function() {
 			throw 'Overload - exception: No methods matched';
 		},
