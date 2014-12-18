@@ -6,6 +6,9 @@
   "version": "0.1.1",
   "homepage": "https://github.com/JosephClay/overload-js",
   "license": "MIT",
+  "scripts": {
+    "test": "nodeunit ./test/node.js"
+  },
   "author": {
     "name": "Joe Clay",
     "email": "j053phclay@gmail.com"
