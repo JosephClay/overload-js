@@ -20,10 +20,10 @@ module.exports = {
 		var a = function() { return false; },
 			b = function() { return true; };
 
-		var o = overload();
-		o.args().use(a);
+		var o = overload()
+			.args().use(a);
 
-		test.ok(_.isFunction(o.expose()), 'Expose is a function');
+		test.ok(o, 'Exposed as a is a function');
 		test.strictEqual(o(), false, 'Method registered and called');
 		test.strictEqual(o(), false, 'Method returns return value');
 		test.strictEqual(o(), false, 'overload can be used without arguments');
@@ -182,20 +182,17 @@ module.exports = {
 			b = function() { return 2; },
 			c = function() { return 3; };
 
-		var o = overload();
-		o.len(0).use(a);
-		o.len(1).use(b);
-		o.len(2).use(c);
+		var method = overload()
+			.len(0).use(a)
+			.len(1).use(b)
+			.len(2).use(c);
 
-		var method = o.expose();
 		test.strictEqual(method(), 1, 'No params called first function');
 		test.strictEqual(method(1), 2, 'One param called second function');
 		test.strictEqual(method(1, 2), 3, 'Two params called third function');
 
-		var ov = overload();
-		ov.len().use(function(a, b, c, d) { return 4; });
-
-		var method2 = ov.expose();
+		var method2 = overload()
+			.len().use(function(a, b, c, d) { return 4; });
 
 		test.strictEqual(method2(1, 2, 3, 4), 4, 'No length gets length from function');
 
@@ -310,7 +307,7 @@ module.exports = {
 
 		test.strictEqual(method(''), 0, 'Exposed function suceeds');
 		test.strictEqual(method(), 'error', 'Exposed function fails');
-		test.strictEqual(_.size(method), 0, 'Exposed function is clean');
+		test.strictEqual(method.args, undefined, 'Exposed function is clean');
 
 		test.done();
 	},
