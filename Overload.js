@@ -1,4 +1,4 @@
-(function(root, undefined) {
+(function(root, TRUE, FALSE, NULL, undefined) {
 
 	// Variablizing the strings for consistency
 	// and to avoid harmful dot-notation look-ups with
@@ -107,11 +107,10 @@
 		 * @param  {Arguments} arraylike
 		 * @return {Array}
 		 */
-		_slice = (function(slice) {
-			return function(arraylike) {
-				return slice.call(arraylike);
-			};
-		}([].slice)),
+		_protoSlice = [].slice,
+		_slice = function(arraylike) {
+			return _protoSlice.call(arraylike);
+		},
 
 		/**
 		 * Mini extend
@@ -128,7 +127,7 @@
 		};
 
 	var _getConfigurationType = function(val) {
-		if (val === null) { return _types[sNull]; }
+		if (val === NULL) { return _types[sNull]; }
 		if (val === undefined) { return _types[sUndefined]; }
 
 		// we have something, but don't know what
@@ -142,9 +141,9 @@
 	};
 
 	var _getParameterType = function(val) {
-		if (val === null) { return _types[sNull]; }
+		if (val === NULL) { return _types[sNull]; }
 		if (val === undefined) { return _types[sUndefined]; }
-		if (val === true || val === false) { return _types[sBoolean]; }
+		if (val === TRUE || val === FALSE) { return _types[sBoolean]; }
 		if (val && val.nodeType === 1) { return _types[sElement]; } // Element check from Underscore
 
 		var typeString = _toString(val);
@@ -193,8 +192,8 @@
 		var mapLength = map.length,
 			argLength = argTypes.length;
 
-		if (mapLength === 0 && argLength === 0) { return true; }
-		if (mapLength !== argLength) { return false; }
+		if (mapLength === 0 && argLength === 0) { return TRUE; }
+		if (mapLength !== argLength) { return FALSE; }
 
 		var idx = 0,
 			mapItem;
@@ -205,19 +204,19 @@
 				if (mapItem.check(args[idx])) {
 					continue;
 				}
-				return false;
+				return FALSE;
 			}
 
 			if (argTypes[idx] !== mapItem) {
-				return false;
+				return FALSE;
 			}
 		}
 
-		return true;
+		return TRUE;
 	};
 
 	var _getArgumentMatch = function(mappings, args) {
-		if (!mappings) { return null; }
+		if (!mappings) { return; }
 
 		var argTypes = _convertParametersTypes(args),
 			idx = 0, length = mappings.length;
@@ -226,12 +225,10 @@
 				return mappings[idx];
 			}
 		}
-
-		return null;
 	};
 
 	var _getLengthMatch = function(mappings, args) {
-		if (!mappings) { return null; }
+		if (!mappings) { return; }
 
 		var argLength = args.length,
 			idx = 0, length = mappings.length;
@@ -240,8 +237,6 @@
 				return mappings[idx];
 			}
 		}
-
-		return null;
 	};
 
 	var _matchAny = function(args, val) {
@@ -254,17 +249,17 @@
 
 			if (mapItem instanceof Custom) {
 				if (mapItem.check(val)) {
-					return true;
+					return TRUE;
 				}
 				continue;
 			}
 
 			if (args[idx] === type) {
-				return true;
+				return TRUE;
 			}
 		}
 
-		return false;
+		return FALSE;
 	};
 
 	var _matchMap = function(config, map) {
@@ -275,17 +270,17 @@
 
 			if (configItem instanceof Custom) {
 				if (!configItem.check(mapItem)) {
-					return false;
+					return FALSE;
 				}
 				continue;
 			}
 
 			if (configItem !== _getParameterType(mapItem)) {
-				return false;
+				return FALSE;
 			}
 		}
 
-		return true;
+		return TRUE;
 	};
 
 	/**
@@ -299,13 +294,13 @@
 
 	var o = {
 		wild: new Custom(function() {
-			return true;
+			return TRUE;
 		}),
 		truthy: new Custom(function(val) {
-			return !!val === true;
+			return !!val === TRUE;
 		}),
 		falsy: new Custom(function(val) {
-			return !!val === false;
+			return !!val === FALSE;
 		}),
 		any: function() {
 			var args = _convertConfigurationTypes(arguments);
@@ -483,4 +478,4 @@
 		root.o = o;
     }
 
-}(window));
+}(window, true, false, null));
