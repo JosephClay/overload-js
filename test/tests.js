@@ -274,6 +274,24 @@ test('map', function() {
 
 	method = ov.expose();
 	strictEqual(method({ bar: false }), true, 'Expect pass - missing key that should be undefined is ignored');
+
+	// reset for convenience method
+	ov = overload();
+	ov.err = function() { return 'error'; };
+	ov.map({ foo: String, bar: Boolean, baz: Date }).use(a);
+
+	method = ov.expose();
+
+	strictEqual(method(''), 'error', 'Expect error');
+	strictEqual(method(true), 'error', 'Expect error');
+	strictEqual(method(new Date()), 'error', 'Expect error');
+	
+	strictEqual(method({ foo: '', bar: false }), 'error', 'Expect error - missing bar');
+	strictEqual(method({ foo: '', baz: new Date() }), 'error', 'Expect error - missing baz');
+	strictEqual(method({ bar: false, baz: new Date() }), 'error', 'Expect error - missing foo');
+	
+	strictEqual(method({ foo: '', bar: false, baz: new Date() }), true, 'Expect pass - fulfilled requirements');
+	strictEqual(method({ foo: '', bar: false, baz: new Date(), foo2: '' }), true, 'Expect pass - extra data ignored');
 });
 
 test('fallback', function() {

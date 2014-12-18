@@ -353,6 +353,21 @@
 		/** @constructor */
 		constructor: Overload,
 
+		map: function(map) {
+			var self = this;
+
+			return {
+				use: function(method) {
+					var argMappings = self._argMaps || (self._argMaps = []);
+					argMappings.push({
+						params: [O.map(map)],
+						method: method
+					});
+					return self;
+				}
+			};
+		},
+
 		args: function() {
 			var self = this,
 				args = arguments;
