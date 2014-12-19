@@ -453,7 +453,7 @@
 		}
 	};
 
-	fn.fail = fn.error;
+	fn.fail = fn.err = fn.error;
 	fn.count = fn.size = fn.len;
 
 	var api = function() {
