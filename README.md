@@ -203,7 +203,7 @@ without a matching function, an error will be thrown...
 Expose
 ----------------
 
-A clean function can optionally be used to exposed so that overload properties
+A clean function can be exposed so that overload properties
 and methods are hidden from the outside world. 
 
 ```javascript
@@ -236,14 +236,11 @@ overload()
 Support
 ----------------
 
-node, modern browsers and IE8+
-
-It may work in older (IE7 and lower) browser, but no guarantees, it hasn't been tested in older browsers.
+Node.js, modern browsers and IE8+
 
 To run the tests, simply open test/index.html in your favorite browser or run `npm test`.
 
 #License
-----------------
 
 The MIT License (MIT)
 
