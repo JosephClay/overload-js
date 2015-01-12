@@ -15,18 +15,17 @@ Basic Usage
 -----------
 
 ```javascript
-var overload = require('overload-js');
 var hello = (function() {
 
 	var secret = '!';
 
 	return overload()
-			.args().use(function() {
-				return secret;
-			})
-			.args(String).use(function(val) {
-				secret = val;
-			});
+		.args().use(function() {
+			return secret;
+		})
+		.args(String).use(function(val) {
+			secret = val;
+		});
 
 }());
 
