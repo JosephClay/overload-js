@@ -471,6 +471,13 @@
 		var custom = new Custom(check);
 		return (o[name] = custom);
 	};
+	api.defineTypes = function(obj) {
+		var key;
+		for (key in obj) {
+			api.define(key, obj[key]);
+		}
+		return api;
+	};
 
 	if (typeof define === 'function') { // RequireJS
         define(function() { return api; });
