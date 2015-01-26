@@ -1,7 +1,7 @@
 overload-js
 ==========
 
-Function overloading for JavaScript for 3.5KB minified, 1.4KB gzipped.
+Function overloading in JavaScript for 3.5KB minified, 1.4KB gzipped.
 
 Provides tools to mimic [function overloading][1] that is present in most strictly-types languages. Prevents messy, long, if-statement, type-checking functions that are hard to read and maintain. Style and API inspired by [Moreiki][2] and [Mongoose][3].
 
@@ -15,18 +15,17 @@ Basic Usage
 -----------
 
 ```javascript
-var overload = require('overload-js');
 var hello = (function() {
 
 	var secret = '!';
 
 	return overload()
-			.args().use(function() {
-				return secret;
-			})
-			.args(String).use(function(val) {
-				secret = val;
-			});
+		.args().use(function() {
+			return secret;
+		})
+		.args(String).use(function(val) {
+			secret = val;
+		});
 
 }());
 
@@ -203,7 +202,7 @@ without a matching function, an error will be thrown...
 Expose
 ----------------
 
-A clean function can optionally be used to exposed so that overload properties
+A clean function can be exposed so that overload properties
 and methods are hidden from the outside world. 
 
 ```javascript
@@ -236,14 +235,13 @@ overload()
 Support
 ----------------
 
-node, modern browsers and IE8+
+[![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/JosephClay/overload-js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-It may work in older (IE7 and lower) browser, but no guarantees, it hasn't been tested in older browsers.
+Node.js, modern browsers and IE8+
 
 To run the tests, simply open test/index.html in your favorite browser or run `npm test`.
 
 #License
-----------------
 
 The MIT License (MIT)
 
