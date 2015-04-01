@@ -120,6 +120,27 @@
 			return base;
 		};
 
+	var callLengths = {
+		0: function(fn, args, context) {
+			if (!context) { return fn(); }
+			return fn.call(context);
+		},
+		1: function(fn, args, context) {
+			return fn.call(context, args[0]);
+		},
+		2: function(fn, args, context) {
+			return fn.call(context, args[0], args[1]);
+		},
+		3: function(fn, args, context) {
+			return fn.call(context, args[0], args[1], args[2]);
+		}
+	};
+	var caller = function(fn, args, context) {
+		var call = callLengths[args.length];
+		if (call) { return call(fn, args, context); }
+		return fn.apply(context, args);
+	};
+
 	var _getConfigurationType = function(val) {
 		if (val === null) { return _types[sNull]; }
 		if (val === undefined) { return _types[sUndefined]; }
@@ -396,10 +417,10 @@
 		call: function() {
 			// prevent function deoptimation
 			var args = arguments, a = [];
-			for (var idx = 0, length = args.length; idx < length; idx++) {
+			for (var idx = 1, length = args.length; idx < length; idx++) {
 				a[idx] = args[idx];
 			}
-			return this._call(args.shift(), a);
+			return this._call(args[0], a);
 		},
 
 		apply: function(context, args) {
@@ -442,24 +463,26 @@
 		},
 
 		_call: function(context, args) {
+			if (context === root) { context = null; }
+
 			args = args || _noopArr;
 
 			// Any argument match, of course, already matches
 			// the length match, so this should be done first
 			var argMatch = _getArgumentMatch(this._m, args);
 			if (argMatch) {
-				return argMatch.method.apply(context, args);
+				return caller(argMatch.method, args, context);
 			}
 
 			// Check for a length match
 			var lengthMatch = _getLengthMatch(this._l, args);
 			if (lengthMatch) {
-				return lengthMatch.method.apply(context, args);
+				return caller(lengthMatch.method, args, context);
 			}
 
 			// Check for a fallback
 			if (this._f) {
-				return this._f.apply(context, args);
+				return caller(this._f, args, context);
 			}
 
 			// Error
