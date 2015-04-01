@@ -3,7 +3,7 @@
   "title": "overload-js",
   "main": "overload.js",
   "description": "Method overloading in JavaScript",
-  "version": "0.3.0",
+  "version": "1.0.0",
   "homepage": "https://github.com/JosephClay/overload-js",
   "license": "MIT",
   "scripts": {
