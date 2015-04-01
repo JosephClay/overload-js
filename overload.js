@@ -1,6 +1,6 @@
 (function(TRUE, FALSE, NULL, undefined) {
 
-	var root = typeof window !== 'undefined' ? window : this;
+	var root = this;
 
 	// Variablizing the strings for consistency
 	// and to avoid harmful dot-notation look-ups with
@@ -404,26 +404,50 @@
 		},
 
 		call: function() {
-			var args = _slice(arguments);
-			return this._call(args.shift(), args);
+			// prevent function deoptimation
+			var args = arguments, a = [];
+			for (var idx = 0, length = args.length; idx < length; idx++) {
+				a[idx] = args[idx];
+			}
+			return this._call(args.shift(), a);
 		},
 
 		apply: function(context, args) {
-			args = (args && args.callee) ? _slice(args) : args;
-			return this._call(context, args);
+			var a = args;
+			if (args && args.callee)  {
+				// passed an arguments object,
+				// not an array.
+				// prevent function deoptimation
+				a = [];
+				for (var idx = 0, length = args.length; idx < length; idx++) {
+					a[idx] = args[idx];
+				}
+			}
+			return this._call(context, a);
 		},
 
 		bind: function(context) {
 			var self = this;
 			return function() {
-				return self._call(context, arguments);
+				// prevent function deoptimation
+				var args = arguments, a = [];
+				for (var idx = 0, length = args.length; idx < length; idx++) {
+					a[idx] = args[idx];
+				}
+				return self._call(context, a);
 			};
 		},
 
 		expose: function() {
 			var self = this;
 			return function() {
-				return self._call(this, arguments);
+				// prevent function deoptimation
+				var args = arguments, a = [];
+				for (var idx = 0, length = args.length; idx < length; idx++) {
+					a[idx] = args[idx];
+				}
+
+				return self._call(this, a);
 			};
 		},
 
