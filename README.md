@@ -1,7 +1,7 @@
 overload-js
 ==========
 
-Function overloading in JavaScript for 3.5KB minified, 1.4KB gzipped.
+Function overloading in JavaScript for 3.9KB minified, 1.4KB gzipped.
 
 Provides tools to mimic [function overloading][1] that is present in most strictly-types languages. Prevents messy, long, if-statement, type-checking functions that are hard to read and maintain. Style and API inspired by [Moreiki][2] and [Mongoose][3].
 
