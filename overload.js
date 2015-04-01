@@ -107,16 +107,6 @@
 		}({})),
 
 		/**
-		 * Changes arguments to an array
-		 * @param  {Arguments} arraylike
-		 * @return {Array}
-		 */
-		_protoSlice = [].slice,
-		_slice = function(arraylike) {
-			return _protoSlice.call(arraylike);
-		},
-
-		/**
 		 * Mini extend
 		 * @param  {Function} base
 		 * @param  {Object}   obj
